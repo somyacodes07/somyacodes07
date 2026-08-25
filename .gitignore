@@ -1,0 +1,4 @@
+CONTEXT.md
+*.py
+dist/*
+!dist/github-jet.svg
