@@ -163,6 +163,14 @@ export async function fetchAvatarDataUri(username, customUrl = "") {
 }
 
 /**
+ * Helper to produce perfectly aligned 28-character monospace prefixes
+ */
+export function makeDots(key) {
+  const numDots = Math.max(1, 23 - key.length);
+  return ": " + ".".repeat(numDots) + " ";
+}
+
+/**
  * Builds formatted dotted lines for terminal system info
  */
 export function buildInfoLines(config) {
@@ -180,7 +188,7 @@ export function buildInfoLines(config) {
   lines.push({
     type: "kv",
     key: "Subject",
-    dots: " ................ ",
+    dots: makeDots("Subject"),
     value: config.name || config.username
   });
 
@@ -189,7 +197,7 @@ export function buildInfoLines(config) {
     lines.push({
       type: "kv",
       key: "Role",
-      dots: " ................... ",
+      dots: makeDots("Role"),
       value: config.role
     });
   }
@@ -202,7 +210,7 @@ export function buildInfoLines(config) {
     lines.push({
       type: "kv",
       key: "Education",
-      dots: " .............. ",
+      dots: makeDots("Education"),
       value: config.education
     });
   }
@@ -212,7 +220,7 @@ export function buildInfoLines(config) {
     lines.push({
       type: "kv",
       key: "Status",
-      dots: " ................. ",
+      dots: makeDots("Status"),
       value: config.status
     });
   }
@@ -220,12 +228,10 @@ export function buildInfoLines(config) {
   // Skills
   if (config.skills && typeof config.skills === "object") {
     for (const [k, v] of Object.entries(config.skills)) {
-      const padLen = Math.max(2, 20 - k.length);
-      const dots = " " + ".".repeat(padLen) + " ";
       lines.push({
         type: "kv",
         key: k,
-        dots,
+        dots: makeDots(k),
         value: String(v)
       });
     }
@@ -246,12 +252,10 @@ export function buildInfoLines(config) {
   // Contacts
   if (config.contacts && typeof config.contacts === "object") {
     for (const [k, v] of Object.entries(config.contacts)) {
-      const padLen = Math.max(2, 20 - k.length);
-      const dots = " " + ".".repeat(padLen) + " ";
       lines.push({
         type: "kv",
         key: k,
-        dots,
+        dots: makeDots(k),
         value: String(v)
       });
     }

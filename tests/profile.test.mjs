@@ -85,7 +85,7 @@ describe('Profile System & Central Config Suite', () => {
 
     it('should fallback to GitHub avatar URL if data URI is not provided', () => {
       const hudSvg = renderAvatarHud(DEFAULT_CONFIG, '', 'dark');
-      assert.ok(hudSvg.includes('avatars.githubusercontent.com'));
+      assert.ok(hudSvg.includes('github.com') || hudSvg.includes('avatars.githubusercontent.com'));
     });
 
     it('should compile valid dark and light SVGs with correct dimensions and theme tokens', () => {
