@@ -1,0 +1,35 @@
+{
+  "$schema": "./profile.schema.json",
+  "username": "somyacodes07",
+  "name": "Somyajeet",
+  "commandTitle": "somya@codes ~ % ./profile.sh --live",
+  "role": "AI/ML Engineer · Full Stack",
+  "education": "CSE (AIML)",
+  "status": "Building · Learning · Shipping",
+  
+  "avatar": {
+    "auto": true,
+    "url": "",
+    "borderGlow": "#22C55E",
+    "badgeText": "PILOT // ONLINE"
+  },
+
+  "skills": {
+    "ToolChain": "Hermes / Codex / Claude Code, Docker, Obsidian",
+    "Core.Lang": "Python, Rust, JS, TS, Java, Kotlin",
+    "Core.Frontend": "React, Next.js, Tailwind, Vite",
+    "Core.Backend": "Node.js, FastAPI, Redis",
+    "Core.Database": "PostgreSQL, MongoDB, Supabase",
+    "Core.Infra": "Docker, GitHub Actions, Vercel"
+  },
+
+  "contacts": {
+    "Portfolio": "github.com/somyacodes07",
+    "LinkedIn": "somyajeet",
+    "GitHub": "somyacodes07"
+  },
+
+  "heatmap": {
+    "title": "[ARCADE DEFENSE GRID // SECTOR: SOMYACODES07]"
+  }
+}

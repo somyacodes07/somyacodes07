@@ -1,10 +1,17 @@
-name: Update jet heatmap SVG
+name: Update GitHub Profile & Jet Heatmap SVGs
 
 on:
   schedule:
     # Runs daily at 05:30 UTC
     - cron: "30 5 * * *"
   workflow_dispatch: {}
+  push:
+    branches:
+      - main
+    paths:
+      - "profile.config.json"
+      - "generate.mjs"
+      - "profile.mjs"
 
 permissions:
   contents: write
@@ -24,7 +31,7 @@ jobs:
       - name: Run Test Suite
         run: npm test
 
-      - name: Generate Live GitHub Jet SVG
+      - name: Generate Live GitHub Profile Cards & Jet Heatmap
         env:
           GH_USERNAME: ${{ github.repository_owner }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,5 +41,5 @@ jobs:
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: update live jet heatmap SVG [skip ci]"
-          file_pattern: "dist/github-jet.svg github-jet.svg"
+          commit_message: "chore: update live profile cards and jet heatmap [skip ci]"
+          file_pattern: "dist/github-jet.svg github-jet.svg dark.svg light.svg"

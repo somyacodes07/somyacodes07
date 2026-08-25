@@ -656,6 +656,8 @@ export function buildSvg(weeks, options = {}) {
   const stats = computeStats(cells);
   const scoreText = computeArcadeScore(stats.total);
 
+  const sectorLabel = options.title || (username ? `[ARCADE DEFENSE GRID // SECTOR: ${sanitizeText(username).toUpperCase()}]` : `[ARCADE DEFENSE GRID // SECTOR: SOMYACODES07]`);
+
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
 <defs>
   <radialGradient id="bgGlow" cx="30%" cy="20%" r="80%">
@@ -753,7 +755,7 @@ ${buildExplosiveImpacts(targets)}
 
 <!-- Bottom HUD Legend & Defense Grid Metadata -->
 ${buildLegend()}
-<text x="${WIDTH - 140}" y="${HEIGHT - 12}" class="hud-meta" text-anchor="end">[ARCADE DEFENSE GRID // SECTOR: SOMYACODES07]</text>
+<text x="${WIDTH - 140}" y="${HEIGHT - 12}" class="hud-meta" text-anchor="end">${sectorLabel}</text>
 
 <!-- Dual-Hull Starfighter Jet & Forward Boresight Sighting Laser -->
 ${buildArcadeStarfighter(targets)}
@@ -785,15 +787,52 @@ export async function fetchWeeks(username = USERNAME, token = TOKEN) {
 }
 
 export async function main() {
-  console.log("Initializing Retro Arcade Space Defender Heatmap Engine...");
+  console.log("=================================================");
+  console.log("Initializing GitHub Cyberpunk Profile Suite Engine");
+  console.log("=================================================");
 
+  // 1. Load configuration from profile.config.json
+  const { loadProfileConfig, fetchAvatarDataUri, buildProfileSvg } = await import("./profile.mjs");
+  const config = loadProfileConfig("profile.config.json");
+  const effectiveUsername = process.env.GH_USERNAME || config.username || USERNAME;
+
+  console.log(`Target Profile User: @${effectiveUsername}`);
+
+  // 2. Fetch avatar if auto or URL configured
+  let avatarDataUri = "";
+  if (config.avatar?.auto !== false) {
+    console.log(`Fetching avatar for @${effectiveUsername}...`);
+    try {
+      avatarDataUri = await fetchAvatarDataUri(effectiveUsername, config.avatar?.url);
+      if (avatarDataUri) {
+        console.log(`Retrieved avatar (${Math.round(avatarDataUri.length / 1024)} KB base64 payload).`);
+      } else {
+        console.log("No avatar stream retrieved; using holographic vector fallback.");
+      }
+    } catch (e) {
+      console.warn(`Avatar fetch notice: ${e.message}`);
+    }
+  }
+
+  // 3. Generate Dark & Light Profile SVG Cards
+  console.log("Building Dark & Light Cyberpunk Profile Cards...");
+  const darkSvg = buildProfileSvg(config, { theme: "dark", avatarDataUri });
+  const lightSvg = buildProfileSvg(config, { theme: "light", avatarDataUri });
+
+  fs.writeFileSync(path.resolve("dark.svg"), darkSvg, "utf8");
+  fs.writeFileSync(path.resolve("light.svg"), lightSvg, "utf8");
+  console.log(`Generated dark.svg (${Buffer.byteLength(darkSvg, "utf8")} bytes)`);
+  console.log(`Generated light.svg (${Buffer.byteLength(lightSvg, "utf8")} bytes)`);
+
+  // 4. Generate Animated Heatmap Jet SVG
+  console.log("Building Retro Arcade Starfighter Jet Heatmap...");
   let weeks = [];
   let isMock = false;
 
-  if (TOKEN && USERNAME) {
+  if (TOKEN && effectiveUsername) {
     try {
-      console.log(`Querying live GitHub contributions for @${USERNAME}...`);
-      weeks = await fetchWeeks(USERNAME, TOKEN);
+      console.log(`Querying live GitHub contributions for @${effectiveUsername}...`);
+      weeks = await fetchWeeks(effectiveUsername, TOKEN);
       console.log(`Successfully retrieved ${weeks.length} weeks of live activity.`);
     } catch (err) {
       console.warn(`Live fetch failed (${err.message}). Falling back to deterministic arcade telemetry.`);
@@ -804,7 +843,8 @@ export async function main() {
     isMock = true;
   }
 
-  const svg = buildSvg(weeks, { mock: isMock, username: USERNAME });
+  const heatmapTitle = config.heatmap?.title || `[ARCADE DEFENSE GRID // SECTOR: ${effectiveUsername.toUpperCase()}]`;
+  const svg = buildSvg(weeks, { mock: isMock, username: effectiveUsername, title: heatmapTitle });
   const outPath = path.resolve(OUTPUT);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, svg, "utf8");
@@ -816,6 +856,10 @@ export async function main() {
     fs.writeFileSync(rootSvg, svg, "utf8");
     console.log(`Synced to ${rootSvg}`);
   }
+
+  console.log("=================================================");
+  console.log("All profile assets generated & synchronized cleanly!");
+  console.log("=================================================");
 }
 
 // Only auto-execute main() if invoked directly from CLI
@@ -825,3 +869,4 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(im
     process.exit(1);
   });
 }
+
