@@ -77,18 +77,18 @@ export function escapeXml(str) {
 }
 
 /**
- * Fetches user avatar as Base64 Data URI with redirect handling and timeout
+ * Fetches user avatar as Base64 Data URI with redirect handling and multi-tier fallbacks
  */
 export async function fetchAvatarDataUri(username, customUrl = "") {
-  // If global fetch is available (Node 18+)
-  const targetUrl = customUrl || (username ? `https://avatars.githubusercontent.com/${username}?size=400` : "");
+  const targetUrl = customUrl || (username ? `https://github.com/${username}.png` : "");
   if (!targetUrl) return "";
 
+  // 1. Try global fetch (Node 18+, GitHub Actions)
   if (typeof fetch === "function") {
     try {
       const res = await fetch(targetUrl, {
         headers: { "User-Agent": "github-profile-card-generator" },
-        signal: AbortSignal.timeout(6000)
+        signal: AbortSignal.timeout(4000)
       });
       if (res.ok) {
         const arrayBuf = await res.arrayBuffer();
@@ -97,11 +97,25 @@ export async function fetchAvatarDataUri(username, customUrl = "") {
         return `data:${mime};base64,${buf.toString("base64")}`;
       }
     } catch (e) {
-      // Fall back to https module
+      // Continue to next fallback
     }
   }
 
-  // Fallback using node:https
+  // 2. Try curl CLI (Built-in on Windows, macOS, Linux)
+  try {
+    const curlBin = process.platform === "win32" ? "curl.exe" : "curl";
+    const buf = execFileSync(curlBin, ["-sL", targetUrl], {
+      timeout: 5000,
+      maxBuffer: 15 * 1024 * 1024
+    });
+    if (buf && buf.length > 100) {
+      return `data:image/png;base64,${buf.toString("base64")}`;
+    }
+  } catch (e) {
+    // Continue to node:https fallback
+  }
+
+  // 3. Fallback using node:https
   return new Promise((resolve) => {
     function fetchUrl(currentUrl, redirects = 0) {
       if (redirects > 5) return resolve("");
@@ -111,8 +125,9 @@ export async function fetchAvatarDataUri(username, customUrl = "") {
         const req = transport.get(
           currentUrl,
           {
-            headers: { "User-Agent": "github-profile-card-generator" },
-            timeout: 3500
+            headers: { "User-Agent": "Mozilla/5.0" },
+            timeout: 4000,
+            family: 4
           },
           (res) => {
             if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
@@ -363,7 +378,7 @@ export function renderAvatarHud(config, avatarDataUri = "", theme = "dark") {
     </g>
 
     <!-- User Profile Picture with Smooth Fade-in -->
-    <image x="148" y="85" width="220" height="220" clip-path="url(#avatarClip)" href="${avatarHref}" preserveAspectRatio="xMidYMid slice" opacity="0.95">
+    <image x="148" y="85" width="220" height="220" clip-path="url(#avatarClip)" href="${avatarHref}" xlink:href="${avatarHref}" preserveAspectRatio="xMidYMid slice" opacity="0.95">
       <animate attributeName="opacity" values="0.85;1;0.85" dur="4s" repeatCount="indefinite"/>
     </image>
 
@@ -418,7 +433,7 @@ export function buildProfileSvg(config = DEFAULT_CONFIG, options = {}) {
 
   const commandLabel = config.commandTitle || `${config.username}@codes ~ % ./profile.sh --live`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="586" viewBox="0 0 1180 586">
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1180" height="586" viewBox="0 0 1180 586">
 <defs>
   <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
     <stop offset="0%" stop-color="${isDark ? '#22C55E' : '#059669'}"/>
