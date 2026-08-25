@@ -1,13 +1,22 @@
 {
-  "name": "github-jet-heatmap",
+  "name": "somyacodes07",
   "version": "1.0.0",
-  "description": "Generates an animated jet-over-contribution-grid SVG from real GitHub contribution data",
+  "description": "Interactive retro arcade space defender GitHub profile and live contribution jet heatmap",
   "type": "module",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "generate": "node generate.mjs",
-    "test": "node --test tests/*.test.mjs"
-  }
+    "test": "node --test tests/"
+  },
+  "keywords": [
+    "github-profile",
+    "heatmap",
+    "svg",
+    "animation",
+    "retro-arcade"
+  ],
+  "author": "somyacodes07",
+  "license": "MIT"
 }

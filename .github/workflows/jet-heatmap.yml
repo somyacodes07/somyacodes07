@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Run Test Suite
+        run: npm test
+
       - name: Generate Live GitHub Jet SVG
         env:
           GH_USERNAME: ${{ github.repository_owner }}
