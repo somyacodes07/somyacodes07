@@ -5,6 +5,7 @@ import {
   buildCells, 
   buildSvg, 
   generateMockWeeks,
+  parsePublicContributionCalendar,
   computeStats,
   computeArcadeScore,
   buildShieldBar,
@@ -17,8 +18,13 @@ import {
   buildDynamicReticle,
   buildGrid,
   buildMonthLabels,
+  COLS,
   JET_X_START,
   JET_X_END,
+  MINER_X_START,
+  MINER_X_END,
+  MINER_TOOL_CONTACT_X,
+  buildMiningSparks,
   THEME
 } from '../generate.mjs';
 
@@ -51,6 +57,34 @@ describe('TDD: Precision Closed-Form Spline Kinematics & Synchronized Combat', (
       assert.strictEqual(statsFromCells.activeDays, statsFromWeeks.activeDays);
     });
 
+    it('should preserve GitHub public graph dates, counts and intensity levels', () => {
+      const start = new Date('2025-10-19T00:00:00Z');
+      const cells = [];
+      const tooltips = [];
+      for (let week = 0; week < 53; week++) {
+        const daysThisWeek = week === 52 ? 5 : 7;
+        for (let day = 0; day < daysThisWeek; day++) {
+          const date = new Date(start);
+          date.setUTCDate(date.getUTCDate() + week * 7 + day);
+          const dateText = date.toISOString().slice(0, 10);
+          const id = `contribution-day-component-${day}-${week}`;
+          const count = day === 0 ? 0 : day;
+          cells.push(`<td data-date="${dateText}" id="${id}" data-level="${count ? 1 : 0}" role="gridcell"></td>`);
+          tooltips.push(`<tool-tip for="${id}">${count ? `${count} contribution${count === 1 ? '' : 's'}` : 'No contributions'} on ${dateText}.</tool-tip>`);
+        }
+      }
+
+      const weeks = parsePublicContributionCalendar(cells.join('') + tooltips.join(''));
+      assert.strictEqual(weeks.length, 53);
+      assert.strictEqual(weeks[0].contributionDays[0].date, '2025-10-19');
+      assert.strictEqual(weeks[0].contributionDays[0].contributionCount, 0);
+      assert.strictEqual(weeks[0].contributionDays[3].contributionCount, 3);
+      assert.strictEqual(weeks[0].contributionDays[3].color, THEME.palette[1]);
+      assert.strictEqual(weeks.at(-1).contributionDays[4].date, '2026-10-22');
+      assert.strictEqual(weeks.at(-1).contributionDays[5].contributionCount, 0);
+      assert.strictEqual(weeks.at(-1).contributionDays[6].contributionCount, 0);
+    });
+
     it('should generate 10 segmented glowing shield health blocks', () => {
       const shieldSvg = buildShieldBar(100);
       assert.ok(shieldSvg.includes('<rect'));
@@ -65,23 +99,23 @@ describe('TDD: Precision Closed-Form Spline Kinematics & Synchronized Combat', (
       assert.strictEqual(Number(col0.t_fwd.toFixed(4)), 0.0000);
       assert.strictEqual(Number(col0.t_ret.toFixed(4)), 1.0000);
 
-      const col51 = columnToTimeFraction(51, 51);
-      assert.strictEqual(Number(col51.t_fwd.toFixed(4)), 0.5000);
-      assert.strictEqual(Number(col51.t_ret.toFixed(4)), 0.5000);
+      const lastColumn = columnToTimeFraction(COLS - 1, COLS - 1);
+      assert.strictEqual(Number(lastColumn.t_fwd.toFixed(4)), 0.5000);
+      assert.strictEqual(Number(lastColumn.t_ret.toFixed(4)), 0.5000);
 
-      const colMid = columnToTimeFraction(25.5, 51);
+      const colMid = columnToTimeFraction((COLS - 1) / 2, COLS - 1);
       assert.strictEqual(Number(colMid.t_fwd.toFixed(4)), 0.2500);
       assert.strictEqual(Number(colMid.t_ret.toFixed(4)), 0.7500);
     });
 
     it('should mathematically guarantee jet position aligns with target column within 0.5px at t_hit', () => {
-      const mockWeeks = generateMockWeeks(52);
-      const cells = buildCells(mockWeeks, 52);
+      const mockWeeks = generateMockWeeks(COLS);
+      const cells = buildCells(mockWeeks, COLS);
       const targets = selectTargets(cells);
 
       for (const t of targets) {
         // Forward sweep evaluation (0..0.5)
-        const pExpected = t.col / 51;
+        const pExpected = t.col / (COLS - 1);
         const expectedX = JET_X_START + pExpected * (JET_X_END - JET_X_START);
         assert.ok(
           Math.abs(expectedX - t.cx) <= 0.5,
@@ -217,20 +251,37 @@ describe('TDD: Precision Closed-Form Spline Kinematics & Synchronized Combat', (
     });
   });
 
-  describe('Arcade HUD Layout & Visual Structure', () => {
-    it('should produce 1180x340 Arcade Space Defender canvas matching dark.svg aesthetics', () => {
+  describe('Minecraft Overworld Layout & Visual Structure', () => {
+    it('should produce a 1180x340 Minecraft contribution world with Steve mining blocks', () => {
       const svg = buildSvg([], { mock: true });
       assert.ok(svg.startsWith('<svg'));
       assert.ok(svg.endsWith('</svg>'));
       assert.ok(svg.includes('viewBox="0 0 1180 340"'));
-      assert.ok(svg.includes('SCORE:'));
-      assert.ok(svg.includes('LVL 42 · AIML ARCHITECT'));
-      assert.ok(svg.includes('COMBO:'));
-      assert.ok(svg.includes('x14 SHIPPER'));
-      assert.ok(svg.includes('SHIELDS: 100%'));
-      assert.ok(svg.includes('id="boresight-reticle"'));
-      assert.ok(svg.includes('id="target-lock-brackets"'));
-      assert.ok(svg.includes('id="world-space-railguns"'));
+      assert.ok(svg.includes('OVERWORLD // SOMYACODES07'));
+      assert.ok(svg.includes('CONTRIBUTIONS'));
+      assert.ok(svg.includes('ACTIVE DAYS'));
+      assert.ok(svg.includes('DIAMOND PICKAXE'));
+      assert.ok(svg.includes('id="contribution-blocks"'));
+      assert.ok(svg.includes('id="steve-mining"'));
+      assert.ok(svg.includes('id="diamond-pickaxe"'));
+      assert.ok(svg.includes('id="left-leg"'));
+      assert.ok(svg.includes('id="tool-impact"'));
+      assert.ok(svg.includes('id="mining-impact-'));
+      assert.ok(svg.includes('#37d7ce'));
+      assert.ok(!svg.includes('starfighter'));
+    });
+
+    it('should synchronize mining sparks and block flashes to selected contribution columns', () => {
+      const cells = buildCells(generateMockWeeks(52), 52);
+      const targets = selectTargets(cells);
+      const sparks = buildMiningSparks(targets);
+      assert.ok(targets.length > 0);
+      assert.ok(sparks.includes('id="mining-impact-0"'));
+      assert.ok(sparks.includes('attributeName="opacity"'));
+      assert.ok(sparks.includes('keyTimes='));
+      for (const target of targets) {
+        assert.ok(target.row >= 3 && target.row <= 5, 'Steve targets the lower-middle mining lane');
+      }
     });
 
     it('should generate rolling month labels matching 52-week chronological window', () => {

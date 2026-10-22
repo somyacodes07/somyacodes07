@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 /**
- * Concept 1: Retro Arcade Space Defender Jet & Heatmap Generator
- * 
- * - 1180px x 340px Retro Arcade Canvas with CRT scanlines and neon borders
- * - Dual-hull interceptor starfighter with twin plasma thrusters and railguns
- * - Holographic target-locking reticle sweeping over contribution power-nodes
- * - Retro Arcade HUD: Score (PTS), Level (Rank), Combo multiplier, Shield health bar
+ * Minecraft Overworld profile and live contribution miner generator
+ *
+ * - Block-built Overworld canvas and live GitHub contribution grid
+ * - Animated pixel-art Steve mines contribution blocks with a diamond pickaxe
+ * - Daily GitHub Actions generation retains the existing API and output paths
  * - Strict TDD & STRIDE / OWASP Top 10 security defenses
  */
 
@@ -16,7 +15,9 @@ export const USERNAME = process.env.GH_USERNAME || "somyacodes07";
 export const TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN || "";
 export const OUTPUT = process.env.OUTPUT_PATH || "dist/github-jet.svg";
 
-export const COLS = 52;
+// GitHub's rolling contribution calendar includes a partial edge week, so it
+// renders as 53 columns across the full 52-week period.
+export const COLS = 53;
 export const ROWS = 7;
 export const CELL = 14;
 export const GAP = 4;
@@ -28,27 +29,32 @@ export const HEIGHT = 340;
 export const GRID_X = 140;
 export const GRID_Y = 88;
 
-export const JET_X_START = GRID_X + CELL / 2; // 147
-export const JET_X_END = GRID_X + (COLS - 1) * STEP + CELL / 2; // 1065
-export const JET_Y = 270;
-export const LOOP_DUR = 18; // seconds
+export const MINER_TOOL_CONTACT_X = 57;
+export const MINER_X_START = GRID_X + CELL / 2 - MINER_TOOL_CONTACT_X;
+export const MINER_X_END = GRID_X + (COLS - 1) * STEP + CELL / 2 - MINER_TOOL_CONTACT_X;
+export const MINER_Y = 148;
+// Keep legacy coordinate exports stable for downstream scripts.
+export const JET_X_START = GRID_X + CELL / 2;
+export const JET_X_END = GRID_X + (COLS - 1) * STEP + CELL / 2;
+export const JET_Y = MINER_Y;
+export const LOOP_DUR = 18;
 
 export const THEME = {
-  bgStart: "#080C16",
-  bgEnd: "#03060F",
-  border1: "#22C55E",
-  border2: "#10B981",
-  border3: "#38BDF8",
-  gold: "#FACC15",
-  cyan: "#38BDF8",
-  rose: "#FB7185",
-  emerald: "#22C55E",
-  mint: "#86EFAC",
-  slate: "#94A3B8",
-  muted: "#475569",
-  cellEmpty: "#0F172A",
-  cellEmptyBorder: "#1E293B",
-  palette: ["#0F172A", "#064E3B", "#047857", "#10B981", "#34D399"]
+  bgStart: "#243a4a",
+  bgEnd: "#172019",
+  border1: "#73ad47",
+  border2: "#91c45c",
+  border3: "#795338",
+  gold: "#d7b96e",
+  cyan: "#87b8c8",
+  rose: "#b96857",
+  emerald: "#70a64a",
+  mint: "#a6d275",
+  slate: "#b2b6a3",
+  muted: "#6d7562",
+  cellEmpty: "#373c35",
+  cellEmptyBorder: "#58604f",
+  palette: ["#373c35", "#46533b", "#5e7f40", "#78a84b", "#a4cf63"]
 };
 
 export const MONTH_NAMES = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -218,7 +224,7 @@ export function buildCells(weeks, colCount = COLS) {
  * Exact analytical inversion of SMIL calcMode="spline" keySplines="0.45 0 0.55 1"
  * Solves 3u^2 - 2u^3 = p in closed-form, then evaluates X(u).
  */
-export function columnToTimeFraction(col, totalCols = 51) {
+export function columnToTimeFraction(col, totalCols = COLS - 1) {
   const p = Math.max(0, Math.min(1, col / totalCols));
   // Exact root of 2u^3 - 3u^2 + p = 0 via Cardano/trigonometric formulation
   const theta = Math.asin(Math.max(-1, Math.min(1, 2 * p - 1))) / 3;
@@ -267,8 +273,10 @@ export function selectTargets(cells) {
   // 1. Group active cells (count > 0 and non-empty color) by column, finding the maximum contribution cell per column
   const byCol = new Map();
   for (const c of cells) {
-    if (c.count > 0 && c.color !== THEME.palette[0]) {
-      if (!byCol.has(c.col) || byCol.get(c.col).count < c.count) {
+    if (c.count > 0 && c.color !== THEME.palette[0] && c.row >= 3 && c.row <= 5) {
+      const rowDistance = Math.abs(c.row - 4);
+      const prev = byCol.get(c.col);
+      if (!prev || rowDistance < Math.abs(prev.row - 4) || (rowDistance === Math.abs(prev.row - 4) && c.count > prev.count)) {
         byCol.set(c.col, c);
       }
     }
@@ -306,7 +314,7 @@ export function selectTargets(cells) {
     const cx = cell.x + CELL / 2;
     const cy = cell.y + CELL / 2;
 
-    const { t_fwd, t_ret } = columnToTimeFraction(col, 51);
+    const { t_fwd, t_ret } = columnToTimeFraction(col, COLS - 1);
     const k_hit_fwd = t_fwd;
     const k_lock_fwd = Math.max(0.0001, t_fwd - 0.014);
     const k_settle_fwd = Math.min(0.4990, t_fwd + 0.008);
@@ -317,6 +325,7 @@ export function selectTargets(cells) {
 
     return {
       col,
+      row: cell.row,
       x: cell.x,
       y: cell.y,
       cx,
@@ -342,31 +351,24 @@ export function buildGrid(cells, targets = []) {
     const key = `${c.x},${c.y}`;
     const isTarget = targetMap.has(key);
     const isLevel0 = c.color === THEME.palette[0];
-    const strokeAttr = isLevel0 ? ` stroke="${THEME.cellEmptyBorder}" stroke-width="0.75"` : ' stroke="#34D399" stroke-width="0.35"';
-
+    const stroke = isLevel0 ? THEME.cellEmptyBorder : "#32432c";
+    const fill = c.color;
     if (isTarget) {
       const t = targetMap.get(key);
-      const fillEvents = [
-        { time: 0, value: c.color },
-        { time: t.k_lock_fwd, value: c.color },
-        { time: t.k_hit_fwd, value: "#FFFFFF" },
-        { time: t.k_settle_fwd, value: "#38BDF8" },
-        { time: Math.min(0.4999, t.k_settle_fwd + 0.004), value: c.color },
-        { time: 0.5, value: c.color },
-        { time: t.k_lock_ret, value: c.color },
-        { time: t.k_hit_ret, value: "#FFFFFF" },
-        { time: t.k_settle_ret, value: "#38BDF8" },
-        { time: Math.min(0.9999, t.k_settle_ret + 0.004), value: c.color },
-        { time: 1, value: c.color }
-      ];
-      const fillTimeline = buildMonotonicKeyTimes(fillEvents);
-
-      svg += `  <rect x="${c.x}" y="${c.y}" width="${CELL}" height="${CELL}" rx="2.5" fill="${c.color}"${strokeAttr}>\n`;
-      svg += `    <animate attributeName="fill" dur="18s" repeatCount="indefinite" values="${fillTimeline.values}" keyTimes="${fillTimeline.keyTimes}"/>\n`;
-      svg += `    <title>${c.count} power units on ${c.date || "untracked"}</title>\n`;
-      svg += `  </rect>\n`;
+      const timeline = buildMonotonicKeyTimes([
+        { time: 0, value: fill },
+        { time: Math.max(0, t.k_hit_fwd - .001), value: fill },
+        { time: t.k_hit_fwd, value: "#b3fff2" },
+        { time: Math.min(.4999, t.k_hit_fwd + .018), value: fill },
+        { time: .5, value: fill },
+        { time: Math.max(.5001, t.k_hit_ret - .001), value: fill },
+        { time: t.k_hit_ret, value: "#b3fff2" },
+        { time: Math.min(.9999, t.k_hit_ret + .018), value: fill },
+        { time: 1, value: fill }
+      ]);
+      svg += `  <g><rect x="${c.x}" y="${c.y}" width="${CELL}" height="${CELL}" fill="${fill}" stroke="${stroke}" stroke-width="1"><animate attributeName="fill" dur="${LOOP_DUR}s" repeatCount="indefinite" values="${timeline.values}" keyTimes="${timeline.keyTimes}"/><title>${c.count} contributions on ${c.date || "untracked"}</title></rect><path d="M${c.x + 2} ${c.y + 3}h4M${c.x + 8} ${c.y + 3}h4M${c.x + 3} ${c.y + 8}v4M${c.x + 10} ${c.y + 7}v4" stroke="#d7eaa4" stroke-width="1" opacity=".72"/></g>\n`;
     } else {
-      svg += `  <rect x="${c.x}" y="${c.y}" width="${CELL}" height="${CELL}" rx="2.5" fill="${c.color}"${strokeAttr}><title>${c.count} power units on ${c.date || "untracked"}</title></rect>\n`;
+      svg += `  <g><rect x="${c.x}" y="${c.y}" width="${CELL}" height="${CELL}" fill="${fill}" stroke="${stroke}" stroke-width="1"><title>${c.count} contributions on ${c.date || "untracked"}</title></rect></g>\n`;
     }
   }
   return svg;
@@ -477,17 +479,17 @@ export function buildDynamicReticle(targets = []) {
   return `<g id="boresight-reticle">
   <!-- Projected Sighting Guide -->
   <line x1="0" y1="-8" x2="0" y2="-180" stroke="#22D3EE" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.6" class="sighting-laser"/>
-  
+
   <!-- Forward Gun-Sight Ring -->
   <circle cx="0" cy="-60" r="16" fill="none" stroke="#22D3EE" stroke-width="1.4" opacity="0.75"/>
   <circle cx="0" cy="-60" r="24" fill="none" stroke="#38BDF8" stroke-width="1" stroke-dasharray="6 3" opacity="0.5"/>
-  
+
   <!-- Directional Crosshair Ticks -->
   <line x1="0" y1="-74" x2="0" y2="-66" stroke="#22D3EE" stroke-width="1.5"/>
   <line x1="0" y1="-54" x2="0" y2="-46" stroke="#22D3EE" stroke-width="1.5"/>
   <line x1="-14" y1="-60" x2="-6" y2="-60" stroke="#22D3EE" stroke-width="1.5"/>
   <line x1="6" y1="-60" x2="14" y2="-60" stroke="#22D3EE" stroke-width="1.5"/>
-  
+
   <!-- Flashing Center Pip -->
   <circle cx="0" cy="-60" r="2" fill="#FACC15">
     <animate attributeName="opacity" values="1;0.3;1" dur="0.6s" repeatCount="indefinite"/>
@@ -501,7 +503,7 @@ export function buildMonthLabels(cells = []) {
   let lastMonth = -1;
   let lastCol = -10;
 
-  // Find column positions where month changes across the 52 weeks
+  // Find column positions where month changes across GitHub's rolling calendar.
   for (let col = 0; col < COLS; col++) {
     const colCells = cells.filter(c => c.col === col && c.date);
     if (colCells.length === 0) continue;
@@ -540,45 +542,136 @@ export function buildDayLabels() {
   let svg = "";
   DAY_NAMES.forEach(({ label, row }) => {
     const y = GRID_Y + row * STEP + 10.5;
-    svg += `  <text x="${GRID_X - 12}" y="${y}" class="axis-label" text-anchor="end">${label}</text>\n`;
+    svg += `  <text x="80" y="${y}" class="axis-label" text-anchor="end">${label}</text>\n`;
   });
   return svg;
 }
 
 export function buildCrosshairs() {
-  const points = [
-    [22, 60], [WIDTH - 22, 60],
-    [22, HEIGHT - 22], [WIDTH - 22, HEIGHT - 22]
-  ];
-  return points.map(([x, y]) =>
-    `  <path d="M${x - 4} ${y} H${x + 4} M${x} ${y - 4} V${y + 4}" stroke="#22D3EE" stroke-width="1" opacity="0.4"/>`
-  ).join("\n");
+  return "";
 }
 
 export function buildStars() {
-  const stars = [
-    [35, 110, 2.2], [45, 190, 3.1], [75, 140, 1.8], [95, 230, 2.7],
-    [1090, 110, 2.5], [1120, 180, 1.9], [1145, 130, 3.4], [1105, 220, 2.1],
-    [320, 290, 2.0], [580, 290, 3.0], [840, 290, 1.7]
-  ];
-  return stars.map(([x, y, dur]) =>
-    `  <circle cx="${x}" cy="${y}" r="1.1" fill="#7DD3FC">` +
-    `<animate attributeName="opacity" values="0.15;0.9;0.15" dur="${dur}s" repeatCount="indefinite"/>` +
-    `</circle>`
-  ).join("\n");
+  return `<g id="overworld-silhouette" opacity=".78">
+  <path d="M0 81h84V68h26V55h20V46h19v18h27v17h90V70h22V52h20V40h21V28h19v38h22v15h104V65h28V48h19V34h20V25h20v41h18v15h92V70h24V55h25V41h24V30h20v39h25v12h124v-9h28V57h23V43h23V31h22v42h25v8h92v166H0z" fill="#273c34"/>
+  <path d="M0 112h70v-11h18v11h113V99h19v13h155v-9h23v9h119v-13h20v13h185v-11h20v11h180v-8h18v8h160v132H0z" fill="#263128"/>
+  <path d="M0 130h57v-7h12v7h98v-6h10v6h146v-8h13v8h164v-7h12v7h128v-6h12v6h190v-8h13v8h104v-7h11v7h142v118H0z" fill="#202a21"/>
+</g>`;
 }
 
 export function buildLegend() {
   let svg = `<g transform="translate(${GRID_X}, ${HEIGHT - 20})">\n`;
-  svg += `  <text x="0" y="8" class="legend-text">POWER NODES: LOW</text>\n`;
+  svg += `  <text x="0" y="8" class="legend-text">CONTRIBUTIONS</text>\n`;
   THEME.palette.forEach((color, i) => {
     const x = 115 + i * 14;
     const stroke = color === THEME.palette[0] ? ` stroke="${THEME.cellEmptyBorder}" stroke-width="0.75"` : "";
-    svg += `  <rect x="${x}" y="0" width="10" height="10" rx="2" fill="${color}"${stroke}/>\n`;
+    svg += `  <rect x="${x}" y="0" width="10" height="10" fill="${color}"${stroke}/>\n`;
   });
-  svg += `  <text x="${115 + 5 * 14 + 4}" y="8" class="legend-text">OVERDRIVE</text>\n`;
+  svg += `  <text x="${115 + 5 * 14 + 4}" y="8" class="legend-text">MORE</text>\n`;
   svg += `</g>\n`;
   return svg;
+}
+
+export function buildMiningSparks(targets = []) {
+  return targets.map((target, index) => {
+    const pulses = buildMonotonicKeyTimes([
+      { time: 0, value: "0" },
+      { time: Math.max(0.0001, target.k_hit_fwd - .002), value: "0" },
+      { time: target.k_hit_fwd, value: "1" },
+      { time: Math.min(.9998, target.k_hit_fwd + .02), value: "0" },
+      { time: Math.max(.5001, target.k_hit_ret - .002), value: "0" },
+      { time: target.k_hit_ret, value: "1" },
+      { time: Math.min(.9999, target.k_hit_ret + .02), value: "0" },
+      { time: 1, value: "0" }
+    ]);
+    const drift = buildMonotonicKeyTimes([
+      { time: 0, value: "0 0" },
+      { time: Math.max(0.0001, target.k_hit_fwd - .002), value: "0 0" },
+      { time: target.k_hit_fwd, value: "-4 -4" },
+      { time: Math.min(.9998, target.k_hit_fwd + .02), value: "-8 -9" },
+      { time: Math.max(.5001, target.k_hit_ret - .002), value: "0 0" },
+      { time: target.k_hit_ret, value: "4 -5" },
+      { time: Math.min(.9999, target.k_hit_ret + .02), value: "8 -10" },
+      { time: 1, value: "0 0" }
+    ]);
+    return `<g id="mining-impact-${index}" transform="translate(${target.cx} ${target.cy})" opacity="0" shape-rendering="crispEdges">
+  <rect x="-7" y="-3" width="3" height="3" fill="#9bf9ed"/><rect x="4" y="-6" width="3" height="3" fill="#55d8ce"/>
+  <rect x="-3" y="4" width="3" height="3" fill="#e9d68d"/><rect x="6" y="3" width="2" height="2" fill="#c6fff4"/>
+  <animate attributeName="opacity" dur="${LOOP_DUR}s" repeatCount="indefinite" values="${pulses.values}" keyTimes="${pulses.keyTimes}"/>
+  <animateTransform attributeName="transform" type="translate" additive="sum" dur="${LOOP_DUR}s" repeatCount="indefinite" values="${drift.values}" keyTimes="${drift.keyTimes}"/>
+</g>`;
+  }).join("\n");
+}
+
+export function buildMinecraftSteve() {
+  const spriteScale = 1.35;
+  return `<g id="steve-mining" shape-rendering="crispEdges">
+  <g id="steve-sprite" transform="translate(${MINER_X_START} ${MINER_Y})">
+    <animateTransform attributeName="transform" type="translate" dur="${LOOP_DUR}s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1" values="${MINER_X_START} ${MINER_Y};${MINER_X_END} ${MINER_Y};${MINER_X_START} ${MINER_Y}"/>
+    <g transform="scale(${spriteScale})">
+      <g id="steve-bob" transform="translate(0 0)">
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 -1;0 0;0 -1;0 0" dur=".72s" repeatCount="indefinite"/>
+        <!-- Wide, faceted diamond head and a wooden handle that meets Steve's grip -->
+        <g id="diamond-pickaxe" transform="rotate(-24 31 43)">
+          <path d="M30 44L45 12" stroke="#68462d" stroke-width="5" stroke-linecap="square"/>
+          <path d="M30 43L45 13" stroke="#a47b45" stroke-width="1.5"/>
+          <path d="M29 11l6-7 5 5 6-7 6 7 6-6 10 10-7 7-5-4-6 7-6-6-6 7-6-6-5 5-7-7z" fill="#126d78"/>
+          <path d="M31 9l4-5 5 5 6-7 6 6 6-6 8 8-6 6-5-4-6 7-6-6-6 7-6-6-4 4-5-5z" fill="#37d7ce"/>
+          <path d="M35 6l5 3 6-7 5 5 6-6 4 4-6 1-5 6-5-4-6 7-5-5-4 3-3-3z" fill="#b4fff0"/>
+          <path d="M31 12l5 2 4-4 5 5-6 7-6-6-5 4-4-4zM50 14l6-6 5 4 5-4 5 5-6 6-5-4-6 7-5-5z" fill="#1ba3a4"/>
+          <path d="M43 10l4-5 5 5-4 5z" fill="#d7fff4"/>
+          <animateTransform attributeName="transform" type="rotate" values="-28 31 43;12 31 43;-28 31 43" dur=".72s" repeatCount="indefinite"/>
+        </g>
+
+        <!-- Back arm and squared shirt retain the existing outfit colors -->
+        <path d="M2 29h7v19H2z" fill="#b8794c"/>
+        <path d="M2 29h3v19H2z" fill="#bf8053"/>
+        <path d="M4 25h27v27H4z" fill="#397da0"/>
+        <path d="M4 25h6v27H4zM25 25h6v27h-6z" fill="#2b6383"/>
+        <path d="M10 25h15v3H10z" fill="#397da0"/>
+
+        <!-- Classic square Steve face: brown hair, blue eyes, nose and beard -->
+        <rect x="2" y="0" width="29" height="25" fill="#bf8053"/>
+        <path d="M2 0h29v5H8v4H2zM27 5h4v10h-4z" fill="#4d3527"/>
+        <path d="M2 5h5v4H2zM25 5h2v4h-2z" fill="#4d3527"/>
+        <rect x="7" y="10" width="7" height="5" fill="#f3ead5"/>
+        <rect x="20" y="10" width="7" height="5" fill="#f3ead5"/>
+        <rect x="10" y="10" width="4" height="5" fill="#4c91a5"/>
+        <rect x="20" y="10" width="4" height="5" fill="#4c91a5"/>
+        <path d="M14 16h5v4h-5z" fill="#a76543"/>
+        <path d="M10 18h5v3h-5zM18 18h5v3h-5zM8 21h17v4H8zM5 18h4v7H5zM25 18h4v7h-4z" fill="#6f4633"/>
+        <rect x="14" y="21" width="5" height="2" fill="#a76543"/>
+
+        <!-- Forearm and hand sit over the haft to make the grip read clearly -->
+        <path d="M28 28h7v9h-7z" fill="#b8794c"/>
+        <path d="M29 35h8v8h-8z" fill="#d3915e"/>
+        <path d="M28 36h4v7h-4z" fill="#bf8053"/>
+        <path d="M26 35h5v8h-5z" fill="#397da0"/>
+
+        <!-- Split blue trousers and the same dark boots, with a subtle walking cycle -->
+        <g id="left-leg" transform="rotate(-4 10 52)">
+          <path d="M4 51h12v18H4z" fill="#354d83"/>
+          <path d="M4 51h5v18H4z" fill="#405c96"/>
+          <path d="M2 68h14v7H2z" fill="#49372c"/>
+          <animateTransform attributeName="transform" type="rotate" values="-8 10 52;8 10 52;-8 10 52" dur=".72s" repeatCount="indefinite"/>
+        </g>
+        <g id="right-leg" transform="rotate(4 22 52)">
+          <path d="M17 51h12v18H17z" fill="#405c96"/>
+          <path d="M24 51h5v18h-5z" fill="#354d83"/>
+          <path d="M16 68h14v7H16z" fill="#49372c"/>
+          <animateTransform attributeName="transform" type="rotate" values="8 22 52;-8 22 52;8 22 52" dur=".72s" repeatCount="indefinite"/>
+        </g>
+
+        <!-- Contact pulse lands on the same contribution column as the tool -->
+        <g id="tool-impact" transform="translate(46 13)" opacity="0">
+          <path d="M0 -5v-4M-5 0h-4M0 5v4M5 0h4" stroke="#d7fff4" stroke-width="2"/>
+          <rect x="-8" y="-8" width="2" height="2" fill="#56e2d2"/>
+          <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;.36;.44;.58;1" dur=".72s" repeatCount="indefinite"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</g>`;
 }
 
 export function buildArcadeStarfighter(targets = []) {
@@ -646,119 +739,52 @@ export function buildArcadeStarfighter(targets = []) {
 }
 
 export function buildSvg(weeks, options = {}) {
-  const { mock = false, username = USERNAME, cols = 52 } = options;
-  if (mock || !weeks || weeks.length === 0) {
-    weeks = generateMockWeeks(cols);
-  }
+  const { mock = false, username = USERNAME, cols = COLS } = options;
+  if (mock || !weeks || weeks.length === 0) weeks = generateMockWeeks(cols);
 
   const cells = buildCells(weeks, cols);
-  const targets = selectTargets(cells);
+  const activeTargets = selectTargets(cells);
   const stats = computeStats(cells);
-  const scoreText = computeArcadeScore(stats.total);
-
-  const sectorLabel = options.title || (username ? `[ARCADE DEFENSE GRID // SECTOR: ${sanitizeText(username).toUpperCase()}]` : `[ARCADE DEFENSE GRID // SECTOR: SOMYACODES07]`);
+  const title = options.title || `OVERWORLD // ${sanitizeText(username).toUpperCase()}`;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
 <defs>
-  <radialGradient id="bgGlow" cx="30%" cy="20%" r="80%">
-    <stop offset="0%" stop-color="${THEME.bgStart}"/>
-    <stop offset="100%" stop-color="${THEME.bgEnd}"/>
-  </radialGradient>
-
-  <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-    <stop offset="0%" stop-color="${THEME.border1}"/>
-    <stop offset="50%" stop-color="${THEME.border2}"/>
-    <stop offset="100%" stop-color="${THEME.border3}"/>
-  </linearGradient>
-
-  <linearGradient id="plasmaFlame" x1="0%" y1="0%" x2="0%" y2="100%">
-    <stop offset="0%" stop-color="#38BDF8"/>
-    <stop offset="40%" stop-color="#818CF8"/>
-    <stop offset="80%" stop-color="#F59E0B"/>
-    <stop offset="100%" stop-color="#EF4444" stop-opacity="0"/>
-  </linearGradient>
-
-  <radialGradient id="ionGlow" cx="50%" cy="50%" r="50%">
-    <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8"/>
-    <stop offset="100%" stop-color="#38BDF8" stop-opacity="0"/>
-  </radialGradient>
-
-  <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
-    <rect width="4" height="1" fill="#7DD3FC" opacity="0.035"/>
-  </pattern>
-
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#344c58"/><stop offset="1" stop-color="#718174"/></linearGradient>
   <style>
-    .hud-label-gold { font-family: 'Courier New', Consolas, monospace; font-size: 13px; fill: #FACC15; font-weight: bold; letter-spacing: 0.5px; }
-    .hud-val-gold   { font-family: 'Courier New', Consolas, monospace; font-size: 13px; fill: #FEF08A; font-weight: bold; }
-    .hud-label-cyan { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: #38BDF8; font-weight: bold; letter-spacing: 0.5px; }
-    .hud-val-cyan   { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: #E0F2FE; font-weight: bold; }
-    .hud-label-rose { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: #FB7185; font-weight: bold; letter-spacing: 0.5px; }
-    .hud-val-rose   { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: #FECDD3; font-weight: bold; }
-    .axis-label     { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: #64748B; font-weight: bold; }
-    .legend-text    { font-family: 'Courier New', Consolas, monospace; font-size: 9px; fill: #64748B; font-weight: bold; letter-spacing: 0.5px; }
-    .hud-meta       { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: #475569; letter-spacing: 1px; font-weight: bold; }
+    .hud-label { font-family: 'Courier New', Consolas, monospace; font-size: 13px; fill: #d1d8c2; font-weight: bold; }
+    .hud-value { font-family: 'Courier New', Consolas, monospace; font-size: 14px; fill: #fff2d6; font-weight: bold; }
+    .axis-label { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: #e0e6d0; font-weight: bold; }
+    .legend-text { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: #e0e6d0; font-weight: bold; }
+    .hud-meta { font-family: 'Courier New', Consolas, monospace; font-size: 11px; fill: #d5ddca; }
     text { white-space: pre; }
   </style>
 </defs>
-
-<!-- Retro Arcade Cosmic Backdrop -->
-<rect width="${WIDTH}" height="${HEIGHT}" rx="16" fill="url(#bgGlow)"/>
-<rect width="${WIDTH}" height="${HEIGHT}" rx="16" fill="url(#scanlines)"/>
-<rect x="1" y="1" width="${WIDTH - 2}" height="${HEIGHT - 2}" rx="16" fill="none" stroke="url(#borderGrad)" stroke-width="1.5"/>
-<rect x="6" y="6" width="${WIDTH - 12}" height="${HEIGHT - 12}" rx="12" fill="none" stroke="#22C55E" stroke-width="0.5" opacity="0.25"/>
-
-<!-- Retro Arcade Top HUD -->
-<g id="arcade-hud">
-  <!-- SCORE -->
-  <text x="24" y="32"><tspan class="hud-label-gold">SCORE: </tspan><tspan class="hud-val-gold">${scoreText}</tspan></text>
-
-  <!-- RANK / LEVEL -->
-  <text x="320" y="32"><tspan class="hud-label-cyan">RANK: </tspan><tspan class="hud-val-cyan">LVL 42 · AIML ARCHITECT</tspan></text>
-
-  <!-- COMBO MULTIPLIER -->
-  <text x="680" y="32"><tspan class="hud-label-rose">COMBO: </tspan><tspan class="hud-val-rose">x14 SHIPPER</tspan></text>
-
-  <!-- SHIELDS -->
-  <text x="930" y="32" class="hud-label-cyan">SHIELDS: 100%</text>
-  <g transform="translate(1045, 22)">
-    ${buildShieldBar(100)}
-  </g>
-
-  <!-- HUD Divider -->
-  <line x1="20" y1="46" x2="${WIDTH - 20}" y2="46" stroke="#1E293B" stroke-width="1"/>
-  <line x1="20" y1="46" x2="160" y2="46" stroke="#FACC15" stroke-width="1" opacity="0.8"/>
-  <line x1="${WIDTH - 160}" y1="46" x2="${WIDTH - 20}" y2="46" stroke="#22D3EE" stroke-width="1" opacity="0.8"/>
-</g>
-
-<!-- Crosshairs & Cosmic Starfield -->
-${buildCrosshairs()}
+<rect width="${WIDTH}" height="${HEIGHT}" fill="url(#sky)"/>
+<rect width="${WIDTH}" height="44" fill="#1c241d"/>
+<rect y="44" width="${WIDTH}" height="3" fill="#6f9c48"/>
+<text x="24" y="28" class="hud-value">${sanitizeText(title)}</text>
+<text x="390" y="28" class="hud-label">CONTRIBUTIONS <tspan class="hud-value">${stats.total.toLocaleString("en-US")}</tspan></text>
+<text x="660" y="28" class="hud-label">ACTIVE DAYS <tspan class="hud-value">${stats.activeDays}</tspan></text>
+<text x="1000" y="28" class="hud-label">DIAMOND PICKAXE</text>
+<line x1="20" y1="47" x2="1160" y2="47" stroke="#384334" stroke-width="1"/>
 ${buildStars()}
-
-<!-- Month and Day Grid Axes -->
-<g id="axes">
-${buildMonthLabels(cells)}
-${buildDayLabels()}
+<rect x="${GRID_X - 12}" y="66" width="${COLS * STEP - GAP + 24}" height="159" fill="#222c27" opacity=".76"/>
+<rect x="${GRID_X - 8}" y="70" width="${COLS * STEP - GAP + 16}" height="151" fill="#202a27" opacity=".45"/>
+<g id="month-labels">${buildMonthLabels(cells)}</g>
+<g id="day-labels">${buildDayLabels()}</g>
+<g id="contribution-blocks">${buildGrid(cells, activeTargets.slice(0, 3))}</g>
+<g id="terrain" shape-rendering="crispEdges">
+  <rect y="248" width="${WIDTH}" height="92" fill="#63462f"/>
+  <rect y="248" width="${WIDTH}" height="8" fill="#719b43"/>
+  <rect y="256" width="${WIDTH}" height="5" fill="#526f34"/>
+  <path d="M0 277h48v12h38v-12h51v12h26v-12h114v12h38v-12h127v12h35v-12h140v12h24v-12h173v12h31v-12h130v12h47v-12h72v63H0z" fill="#765238"/>
+  <path d="M0 311h76v-12h24v12h136v-12h22v12h158v-12h34v12h125v-12h23v12h202v-12h30v12h146v-12h27v12h97v29H0z" fill="#553d2c"/>
 </g>
-
-<!-- Heatmap Contribution Power-Core Grid -->
-<g id="grid">
-${buildGrid(cells, targets)}</g>
-
-<!-- Holographic Target Acquisition Lock Brackets -->
-${buildTargetLockBrackets(targets)}
-
-<!-- World-Space High-Intensity Precision Railgun Lances -->
-${buildProminentRailguns(targets)}
-
-<!-- Crisp Shockwave Detonations on Struck Cells -->
-${buildExplosiveImpacts(targets)}
-
-<!-- Bottom HUD Legend & Defense Grid Metadata -->
 ${buildLegend()}
-<text x="${WIDTH - 140}" y="${HEIGHT - 12}" class="hud-meta" text-anchor="end">${sectorLabel}</text>
-
-<!-- Dual-Hull Starfighter Jet & Forward Boresight Sighting Laser -->
-${buildArcadeStarfighter(targets)}
+<text x="${WIDTH - 24}" y="${HEIGHT - 12}" class="hud-meta" text-anchor="end">Mined over the last 52 weeks</text>
+${buildMinecraftSteve()}
+${buildMiningSparks(activeTargets)}
+<rect x="1" y="1" width="${WIDTH - 2}" height="${HEIGHT - 2}" fill="none" stroke="#111811" stroke-width="2"/>
 </svg>`;
 }
 
@@ -786,9 +812,72 @@ export async function fetchWeeks(username = USERNAME, token = TOKEN) {
   return json.data.user.contributionsCollection.contributionCalendar.weeks;
 }
 
+export function parsePublicContributionCalendar(html) {
+  const tooltips = new Map();
+  for (const match of html.matchAll(/<tool-tip\b([^>]*)>([\s\S]*?)<\/tool-tip>/gi)) {
+    const target = match[1].match(/\bfor="([^"]+)"/i)?.[1];
+    if (!target) continue;
+    tooltips.set(target, match[2].replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").trim());
+  }
+
+  const days = [];
+  for (const match of html.matchAll(/<td\b([^>]*)>/gi)) {
+    const attrs = match[1];
+    if (!/\brole="gridcell"/i.test(attrs)) continue;
+    const date = attrs.match(/\bdata-date="(\d{4}-\d{2}-\d{2})"/i)?.[1];
+    const id = attrs.match(/\bid="([^"]+)"/i)?.[1];
+    const levelText = attrs.match(/\bdata-level="([0-4])"/i)?.[1];
+    if (!date || !id || levelText === undefined) continue;
+
+    const label = tooltips.get(id);
+    if (!label) throw new Error(`Missing contribution tooltip for ${date}`);
+    const countText = label.match(/\b([\d,]+)\s+contributions?\b/i)?.[1];
+    const contributionCount = countText ? Number(countText.replace(/,/g, "")) : (/\bno contributions\b/i.test(label) ? 0 : NaN);
+    if (!Number.isSafeInteger(contributionCount) || contributionCount < 0) {
+      throw new Error(`Could not read contribution count for ${date}`);
+    }
+    const level = Number(levelText);
+    days.push({ date, contributionCount, color: THEME.palette[level] });
+  }
+
+  if (days.length < 350) throw new Error(`GitHub returned an incomplete contribution calendar (${days.length} days)`);
+  days.sort((a, b) => a.date.localeCompare(b.date));
+
+  const weeksBySunday = new Map();
+  for (const day of days) {
+    const date = new Date(`${day.date}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() - date.getUTCDay());
+    const sunday = date.toISOString().slice(0, 10);
+    if (!weeksBySunday.has(sunday)) weeksBySunday.set(sunday, []);
+    weeksBySunday.get(sunday).push(day);
+  }
+
+  const weeks = [...weeksBySunday.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([sunday, contributionDays]) => {
+    const byWeekday = new Map(contributionDays.map(day => [new Date(`${day.date}T00:00:00Z`).getUTCDay(), day]));
+    const start = new Date(`${sunday}T00:00:00Z`);
+    const completeDays = Array.from({ length: ROWS }, (_, weekday) => {
+      const existing = byWeekday.get(weekday);
+      if (existing) return existing;
+      const date = new Date(start);
+      date.setUTCDate(date.getUTCDate() + weekday);
+      return { date: date.toISOString().slice(0, 10), contributionCount: 0, color: THEME.palette[0] };
+    });
+    return { contributionDays: completeDays };
+  });
+  return weeks;
+}
+
+export async function fetchPublicContributionWeeks(username = USERNAME) {
+  if (!validateUsername(username)) throw new Error("Invalid GitHub username");
+  const endpoint = `https://github.com/users/${encodeURIComponent(username)}/contributions`;
+  const response = await fetch(endpoint, { headers: { Accept: "text/html" } });
+  if (!response.ok) throw new Error(`GitHub profile returned HTTP ${response.status}`);
+  return parsePublicContributionCalendar(await response.text());
+}
+
 export async function main() {
   console.log("=================================================");
-  console.log("Initializing GitHub Cyberpunk Profile Suite Engine");
+  console.log("Initializing Minecraft GitHub Profile Generator");
   console.log("=================================================");
 
   // 1. Load configuration from profile.config.json
@@ -807,7 +896,7 @@ export async function main() {
       if (avatarDataUri) {
         console.log(`Retrieved avatar (${Math.round(avatarDataUri.length / 1024)} KB base64 payload).`);
       } else {
-        console.log("No avatar stream retrieved; using holographic vector fallback.");
+        console.log("No avatar stream retrieved; using the pixel frame without a portrait.");
       }
     } catch (e) {
       console.warn(`Avatar fetch notice: ${e.message}`);
@@ -815,7 +904,7 @@ export async function main() {
   }
 
   // 3. Generate Dark & Light Profile SVG Cards
-  console.log("Building Dark & Light Cyberpunk Profile Cards...");
+  console.log("Building Dark & Light Overworld Profile Cards...");
   const darkSvg = buildProfileSvg(config, { theme: "dark", avatarDataUri });
   const lightSvg = buildProfileSvg(config, { theme: "light", avatarDataUri });
 
@@ -824,27 +913,26 @@ export async function main() {
   console.log(`Generated dark.svg (${Buffer.byteLength(darkSvg, "utf8")} bytes)`);
   console.log(`Generated light.svg (${Buffer.byteLength(lightSvg, "utf8")} bytes)`);
 
-  // 4. Generate Animated Heatmap Jet SVG
-  console.log("Building Retro Arcade Starfighter Jet Heatmap...");
-  let weeks = [];
-  let isMock = false;
-
+  // 4. Generate the animated Overworld contribution SVG
+  console.log("Building the live Overworld contribution heatmap...");
+  let weeks;
   if (TOKEN && effectiveUsername) {
     try {
       console.log(`Querying live GitHub contributions for @${effectiveUsername}...`);
       weeks = await fetchWeeks(effectiveUsername, TOKEN);
-      console.log(`Successfully retrieved ${weeks.length} weeks of live activity.`);
+      console.log(`Successfully retrieved ${weeks.length} weeks from the GitHub API.`);
     } catch (err) {
-      console.warn(`Live fetch failed (${err.message}). Falling back to deterministic arcade telemetry.`);
-      isMock = true;
+      console.warn(`GitHub API fetch failed (${err.message}); reading the public contribution graph instead.`);
     }
-  } else {
-    console.log("No GH_TOKEN detected in environment. Generating deterministic arcade preview.");
-    isMock = true;
+  }
+  if (!weeks) {
+    console.log(`Reading the public contribution graph for @${effectiveUsername}...`);
+    weeks = await fetchPublicContributionWeeks(effectiveUsername);
+    console.log(`Successfully retrieved ${weeks.length} weeks from GitHub's public graph.`);
   }
 
-  const heatmapTitle = config.heatmap?.title || `[ARCADE DEFENSE GRID // SECTOR: ${effectiveUsername.toUpperCase()}]`;
-  const svg = buildSvg(weeks, { mock: isMock, username: effectiveUsername, title: heatmapTitle });
+  const heatmapTitle = config.heatmap?.title || `OVERWORLD // ${effectiveUsername.toUpperCase()}`;
+  const svg = buildSvg(weeks, { username: effectiveUsername, title: heatmapTitle });
   const outPath = path.resolve(OUTPUT);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, svg, "utf8");
@@ -869,4 +957,3 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(im
     process.exit(1);
   });
 }
-

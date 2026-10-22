@@ -1,742 +1,534 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1180" height="340" viewBox="0 0 1180 340">
 <defs>
-  <radialGradient id="bgGlow" cx="30%" cy="20%" r="80%">
-    <stop offset="0%" stop-color="#080C16"/>
-    <stop offset="100%" stop-color="#03060F"/>
-  </radialGradient>
-
-  <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-    <stop offset="0%" stop-color="#22C55E"/>
-    <stop offset="50%" stop-color="#10B981"/>
-    <stop offset="100%" stop-color="#38BDF8"/>
-  </linearGradient>
-
-  <linearGradient id="plasmaFlame" x1="0%" y1="0%" x2="0%" y2="100%">
-    <stop offset="0%" stop-color="#38BDF8"/>
-    <stop offset="40%" stop-color="#818CF8"/>
-    <stop offset="80%" stop-color="#F59E0B"/>
-    <stop offset="100%" stop-color="#EF4444" stop-opacity="0"/>
-  </linearGradient>
-
-  <radialGradient id="ionGlow" cx="50%" cy="50%" r="50%">
-    <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8"/>
-    <stop offset="100%" stop-color="#38BDF8" stop-opacity="0"/>
-  </radialGradient>
-
-  <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
-    <rect width="4" height="1" fill="#7DD3FC" opacity="0.035"/>
-  </pattern>
-
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#344c58"/><stop offset="1" stop-color="#718174"/></linearGradient>
   <style>
-    .hud-label-gold { font-family: 'Courier New', Consolas, monospace; font-size: 13px; fill: #FACC15; font-weight: bold; letter-spacing: 0.5px; }
-    .hud-val-gold   { font-family: 'Courier New', Consolas, monospace; font-size: 13px; fill: #FEF08A; font-weight: bold; }
-    .hud-label-cyan { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: #38BDF8; font-weight: bold; letter-spacing: 0.5px; }
-    .hud-val-cyan   { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: #E0F2FE; font-weight: bold; }
-    .hud-label-rose { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: #FB7185; font-weight: bold; letter-spacing: 0.5px; }
-    .hud-val-rose   { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: #FECDD3; font-weight: bold; }
-    .axis-label     { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: #64748B; font-weight: bold; }
-    .legend-text    { font-family: 'Courier New', Consolas, monospace; font-size: 9px; fill: #64748B; font-weight: bold; letter-spacing: 0.5px; }
-    .hud-meta       { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: #475569; letter-spacing: 1px; font-weight: bold; }
+    .hud-label { font-family: 'Courier New', Consolas, monospace; font-size: 13px; fill: #d1d8c2; font-weight: bold; }
+    .hud-value { font-family: 'Courier New', Consolas, monospace; font-size: 14px; fill: #fff2d6; font-weight: bold; }
+    .axis-label { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: #e0e6d0; font-weight: bold; }
+    .legend-text { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: #e0e6d0; font-weight: bold; }
+    .hud-meta { font-family: 'Courier New', Consolas, monospace; font-size: 11px; fill: #d5ddca; }
     text { white-space: pre; }
   </style>
 </defs>
-
-<!-- Retro Arcade Cosmic Backdrop -->
-<rect width="1180" height="340" rx="16" fill="url(#bgGlow)"/>
-<rect width="1180" height="340" rx="16" fill="url(#scanlines)"/>
-<rect x="1" y="1" width="1178" height="338" rx="16" fill="none" stroke="url(#borderGrad)" stroke-width="1.5"/>
-<rect x="6" y="6" width="1168" height="328" rx="12" fill="none" stroke="#22C55E" stroke-width="0.5" opacity="0.25"/>
-
-<!-- Retro Arcade Top HUD -->
-<g id="arcade-hud">
-  <!-- SCORE -->
-  <text x="24" y="32"><tspan class="hud-label-gold">SCORE: </tspan><tspan class="hud-val-gold">651,000 PTS</tspan></text>
-
-  <!-- RANK / LEVEL -->
-  <text x="320" y="32"><tspan class="hud-label-cyan">RANK: </tspan><tspan class="hud-val-cyan">LVL 42 · AIML ARCHITECT</tspan></text>
-
-  <!-- COMBO MULTIPLIER -->
-  <text x="680" y="32"><tspan class="hud-label-rose">COMBO: </tspan><tspan class="hud-val-rose">x14 SHIPPER</tspan></text>
-
-  <!-- SHIELDS -->
-  <text x="930" y="32" class="hud-label-cyan">SHIELDS: 100%</text>
-  <g transform="translate(1045, 22)">
-    <g id="shield-segments">
-  <rect x="0" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="10" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="20" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="30" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="40" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="50" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="60" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="70" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="80" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
-  <rect x="90" y="0" width="7.5" height="12" rx="1.5" fill="#22D3EE" opacity="0.95" stroke="#0284C7" stroke-width="0.5"/>
+<rect width="1180" height="340" fill="url(#sky)"/>
+<rect width="1180" height="44" fill="#1c241d"/>
+<rect y="44" width="1180" height="3" fill="#6f9c48"/>
+<text x="24" y="28" class="hud-value">OVERWORLD // SOMYACODES07</text>
+<text x="390" y="28" class="hud-label">CONTRIBUTIONS <tspan class="hud-value">652</tspan></text>
+<text x="660" y="28" class="hud-label">ACTIVE DAYS <tspan class="hud-value">80</tspan></text>
+<text x="1000" y="28" class="hud-label">DIAMOND PICKAXE</text>
+<line x1="20" y1="47" x2="1160" y2="47" stroke="#384334" stroke-width="1"/>
+<g id="overworld-silhouette" opacity=".78">
+  <path d="M0 81h84V68h26V55h20V46h19v18h27v17h90V70h22V52h20V40h21V28h19v38h22v15h104V65h28V48h19V34h20V25h20v41h18v15h92V70h24V55h25V41h24V30h20v39h25v12h124v-9h28V57h23V43h23V31h22v42h25v8h92v166H0z" fill="#273c34"/>
+  <path d="M0 112h70v-11h18v11h113V99h19v13h155v-9h23v9h119v-13h20v13h185v-11h20v11h180v-8h18v8h160v132H0z" fill="#263128"/>
+  <path d="M0 130h57v-7h12v7h98v-6h10v6h146v-8h13v8h164v-7h12v7h128v-6h12v6h190v-8h13v8h104v-7h11v7h142v118H0z" fill="#202a21"/>
 </g>
-  </g>
-
-  <!-- HUD Divider -->
-  <line x1="20" y1="46" x2="1160" y2="46" stroke="#1E293B" stroke-width="1"/>
-  <line x1="20" y1="46" x2="160" y2="46" stroke="#FACC15" stroke-width="1" opacity="0.8"/>
-  <line x1="1020" y1="46" x2="1160" y2="46" stroke="#22D3EE" stroke-width="1" opacity="0.8"/>
+<rect x="128" y="66" width="974" height="159" fill="#222c27" opacity=".76"/>
+<rect x="132" y="70" width="966" height="151" fill="#202a27" opacity=".45"/>
+<g id="month-labels">  <text x="140" y="74" class="axis-label">OCT</text>
+  <text x="176" y="74" class="axis-label">NOV</text>
+  <text x="266" y="74" class="axis-label">DEC</text>
+  <text x="338" y="74" class="axis-label">JAN</text>
+  <text x="410" y="74" class="axis-label">FEB</text>
+  <text x="482" y="74" class="axis-label">MAR</text>
+  <text x="572" y="74" class="axis-label">APR</text>
+  <text x="644" y="74" class="axis-label">MAY</text>
+  <text x="734" y="74" class="axis-label">JUN</text>
+  <text x="806" y="74" class="axis-label">JUL</text>
+  <text x="878" y="74" class="axis-label">AUG</text>
+  <text x="968" y="74" class="axis-label">SEP</text>
+  <text x="1040" y="74" class="axis-label">OCT</text>
 </g>
-
-<!-- Crosshairs & Cosmic Starfield -->
-  <path d="M18 60 H26 M22 56 V64" stroke="#22D3EE" stroke-width="1" opacity="0.4"/>
-  <path d="M1154 60 H1162 M1158 56 V64" stroke="#22D3EE" stroke-width="1" opacity="0.4"/>
-  <path d="M18 318 H26 M22 314 V322" stroke="#22D3EE" stroke-width="1" opacity="0.4"/>
-  <path d="M1154 318 H1162 M1158 314 V322" stroke="#22D3EE" stroke-width="1" opacity="0.4"/>
-  <circle cx="35" cy="110" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="2.2s" repeatCount="indefinite"/></circle>
-  <circle cx="45" cy="190" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="3.1s" repeatCount="indefinite"/></circle>
-  <circle cx="75" cy="140" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="1.8s" repeatCount="indefinite"/></circle>
-  <circle cx="95" cy="230" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="2.7s" repeatCount="indefinite"/></circle>
-  <circle cx="1090" cy="110" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="2.5s" repeatCount="indefinite"/></circle>
-  <circle cx="1120" cy="180" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="1.9s" repeatCount="indefinite"/></circle>
-  <circle cx="1145" cy="130" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="3.4s" repeatCount="indefinite"/></circle>
-  <circle cx="1105" cy="220" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="2.1s" repeatCount="indefinite"/></circle>
-  <circle cx="320" cy="290" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="2s" repeatCount="indefinite"/></circle>
-  <circle cx="580" cy="290" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="3s" repeatCount="indefinite"/></circle>
-  <circle cx="840" cy="290" r="1.1" fill="#7DD3FC"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="1.7s" repeatCount="indefinite"/></circle>
-
-<!-- Month and Day Grid Axes -->
-<g id="axes">
-  <text x="140" y="74" class="axis-label">OCT</text>
-  <text x="248" y="74" class="axis-label">DEC</text>
-  <text x="320" y="74" class="axis-label">JAN</text>
-  <text x="392" y="74" class="axis-label">FEB</text>
-  <text x="464" y="74" class="axis-label">MAR</text>
-  <text x="554" y="74" class="axis-label">APR</text>
-  <text x="626" y="74" class="axis-label">MAY</text>
-  <text x="716" y="74" class="axis-label">JUN</text>
-  <text x="788" y="74" class="axis-label">JUL</text>
-  <text x="860" y="74" class="axis-label">AUG</text>
-  <text x="950" y="74" class="axis-label">SEP</text>
-  <text x="1022" y="74" class="axis-label">OCT</text>
-
-  <text x="128" y="116.5" class="axis-label" text-anchor="end">MON</text>
-  <text x="128" y="152.5" class="axis-label" text-anchor="end">WED</text>
-  <text x="128" y="188.5" class="axis-label" text-anchor="end">FRI</text>
-
+<g id="day-labels">  <text x="80" y="116.5" class="axis-label" text-anchor="end">MON</text>
+  <text x="80" y="152.5" class="axis-label" text-anchor="end">WED</text>
+  <text x="80" y="188.5" class="axis-label" text-anchor="end">FRI</text>
 </g>
-
-<!-- Heatmap Contribution Power-Core Grid -->
-<g id="grid">
-  <rect x="140" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-10-26</title></rect>
-  <rect x="140" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-10-27</title></rect>
-  <rect x="140" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-10-28</title></rect>
-  <rect x="140" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-10-29</title></rect>
-  <rect x="140" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-10-30</title></rect>
-  <rect x="140" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-10-31</title></rect>
-  <rect x="140" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-01</title></rect>
-  <rect x="158" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-02</title></rect>
-  <rect x="158" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-03</title></rect>
-  <rect x="158" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-04</title></rect>
-  <rect x="158" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-05</title></rect>
-  <rect x="158" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-06</title></rect>
-  <rect x="158" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-07</title></rect>
-  <rect x="158" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-08</title></rect>
-  <rect x="176" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-09</title></rect>
-  <rect x="176" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-10</title></rect>
-  <rect x="176" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-11</title></rect>
-  <rect x="176" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-12</title></rect>
-  <rect x="176" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-13</title></rect>
-  <rect x="176" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-14</title></rect>
-  <rect x="176" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-15</title></rect>
-  <rect x="194" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-16</title></rect>
-  <rect x="194" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-17</title></rect>
-  <rect x="194" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-18</title></rect>
-  <rect x="194" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-19</title></rect>
-  <rect x="194" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-20</title></rect>
-  <rect x="194" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-21</title></rect>
-  <rect x="194" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-22</title></rect>
-  <rect x="212" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-23</title></rect>
-  <rect x="212" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-24</title></rect>
-  <rect x="212" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-25</title></rect>
-  <rect x="212" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-26</title></rect>
-  <rect x="212" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-27</title></rect>
-  <rect x="212" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-28</title></rect>
-  <rect x="212" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-29</title></rect>
-  <rect x="230" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-11-30</title></rect>
-  <rect x="230" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-01</title></rect>
-  <rect x="230" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-02</title></rect>
-  <rect x="230" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-03</title></rect>
-  <rect x="230" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-04</title></rect>
-  <rect x="230" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-05</title></rect>
-  <rect x="230" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-06</title></rect>
-  <rect x="248" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-07</title></rect>
-  <rect x="248" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-08</title></rect>
-  <rect x="248" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-09</title></rect>
-  <rect x="248" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-10</title></rect>
-  <rect x="248" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-11</title></rect>
-  <rect x="248" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-12</title></rect>
-  <rect x="248" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-13</title></rect>
-  <rect x="266" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-14</title></rect>
-  <rect x="266" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-15</title></rect>
-  <rect x="266" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-16</title></rect>
-  <rect x="266" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-17</title></rect>
-  <rect x="266" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-18</title></rect>
-  <rect x="266" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-19</title></rect>
-  <rect x="266" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-20</title></rect>
-  <rect x="284" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-21</title></rect>
-  <rect x="284" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-22</title></rect>
-  <rect x="284" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-23</title></rect>
-  <rect x="284" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-24</title></rect>
-  <rect x="284" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-25</title></rect>
-  <rect x="284" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-26</title></rect>
-  <rect x="284" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-27</title></rect>
-  <rect x="302" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-28</title></rect>
-  <rect x="302" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-29</title></rect>
-  <rect x="302" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-30</title></rect>
-  <rect x="302" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2025-12-31</title></rect>
-  <rect x="302" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-01</title></rect>
-  <rect x="302" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-02</title></rect>
-  <rect x="302" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-03</title></rect>
-  <rect x="320" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-04</title></rect>
-  <rect x="320" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-05</title></rect>
-  <rect x="320" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-06</title></rect>
-  <rect x="320" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-07</title></rect>
-  <rect x="320" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-08</title></rect>
-  <rect x="320" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-09</title></rect>
-  <rect x="320" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-10</title></rect>
-  <rect x="338" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-11</title></rect>
-  <rect x="338" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-12</title></rect>
-  <rect x="338" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-13</title></rect>
-  <rect x="338" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-14</title></rect>
-  <rect x="338" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-15</title></rect>
-  <rect x="338" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-16</title></rect>
-  <rect x="338" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-17</title></rect>
-  <rect x="356" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-18</title></rect>
-  <rect x="356" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-19</title></rect>
-  <rect x="356" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-20</title></rect>
-  <rect x="356" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-21</title></rect>
-  <rect x="356" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-22</title></rect>
-  <rect x="356" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-23</title></rect>
-  <rect x="356" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-24</title></rect>
-  <rect x="374" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-25</title></rect>
-  <rect x="374" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-26</title></rect>
-  <rect x="374" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-27</title></rect>
-  <rect x="374" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-28</title></rect>
-  <rect x="374" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-29</title></rect>
-  <rect x="374" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-30</title></rect>
-  <rect x="374" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-01-31</title></rect>
-  <rect x="392" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-01</title></rect>
-  <rect x="392" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-02</title></rect>
-  <rect x="392" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-03</title></rect>
-  <rect x="392" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-04</title></rect>
-  <rect x="392" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-05</title></rect>
-  <rect x="392" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-06</title></rect>
-  <rect x="392" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-07</title></rect>
-  <rect x="410" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-08</title></rect>
-  <rect x="410" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-09</title></rect>
-  <rect x="410" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-10</title></rect>
-  <rect x="410" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-11</title></rect>
-  <rect x="410" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-12</title></rect>
-  <rect x="410" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-13</title></rect>
-  <rect x="410" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-14</title></rect>
-  <rect x="428" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-15</title></rect>
-  <rect x="428" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-16</title></rect>
-  <rect x="428" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-17</title></rect>
-  <rect x="428" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-18</title></rect>
-  <rect x="428" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-19</title></rect>
-  <rect x="428" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-20</title></rect>
-  <rect x="428" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-21</title></rect>
-  <rect x="446" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-22</title></rect>
-  <rect x="446" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-23</title></rect>
-  <rect x="446" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-24</title></rect>
-  <rect x="446" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-25</title></rect>
-  <rect x="446" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-26</title></rect>
-  <rect x="446" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-27</title></rect>
-  <rect x="446" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-02-28</title></rect>
-  <rect x="464" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-01</title></rect>
-  <rect x="464" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-02</title></rect>
-  <rect x="464" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-03</title></rect>
-  <rect x="464" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-04</title></rect>
-  <rect x="464" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-05</title></rect>
-  <rect x="464" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-06</title></rect>
-  <rect x="464" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-07</title></rect>
-  <rect x="482" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-08</title></rect>
-  <rect x="482" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-09</title></rect>
-  <rect x="482" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-10</title></rect>
-  <rect x="482" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-11</title></rect>
-  <rect x="482" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-12</title></rect>
-  <rect x="482" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-13</title></rect>
-  <rect x="482" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-14</title></rect>
-  <rect x="500" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-15</title></rect>
-  <rect x="500" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-16</title></rect>
-  <rect x="500" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-17</title></rect>
-  <rect x="500" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-18</title></rect>
-  <rect x="500" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-19</title></rect>
-  <rect x="500" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-20</title></rect>
-  <rect x="500" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-21</title></rect>
-  <rect x="518" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-22</title></rect>
-  <rect x="518" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-23</title></rect>
-  <rect x="518" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-24</title></rect>
-  <rect x="518" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-25</title></rect>
-  <rect x="518" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-26</title></rect>
-  <rect x="518" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-27</title></rect>
-  <rect x="518" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-28</title></rect>
-  <rect x="536" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-29</title></rect>
-  <rect x="536" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-30</title></rect>
-  <rect x="536" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-03-31</title></rect>
-  <rect x="536" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-01</title></rect>
-  <rect x="536" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-02</title></rect>
-  <rect x="536" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-03</title></rect>
-  <rect x="536" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-04</title></rect>
-  <rect x="554" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-05</title></rect>
-  <rect x="554" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-06</title></rect>
-  <rect x="554" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-07</title></rect>
-  <rect x="554" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-08</title></rect>
-  <rect x="554" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-09</title></rect>
-  <rect x="554" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-10</title></rect>
-  <rect x="554" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-11</title></rect>
-  <rect x="572" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-12</title></rect>
-  <rect x="572" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-13</title></rect>
-  <rect x="572" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-14</title></rect>
-  <rect x="572" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-15</title></rect>
-  <rect x="572" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-16</title></rect>
-  <rect x="572" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-17</title></rect>
-  <rect x="572" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-18</title></rect>
-  <rect x="590" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-19</title></rect>
-  <rect x="590" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-20</title></rect>
-  <rect x="590" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-21</title></rect>
-  <rect x="590" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-22</title></rect>
-  <rect x="590" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-23</title></rect>
-  <rect x="590" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-24</title></rect>
-  <rect x="590" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-25</title></rect>
-  <rect x="608" y="88" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35">
-    <animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#9be9a8; #9be9a8; #9be9a8; #FFFFFF; #38BDF8; #9be9a8; #9be9a8; #9be9a8; #FFFFFF; #38BDF8; #9be9a8; #9be9a8; #9be9a8" keyTimes="0.0000; 0.0001; 0.2387; 0.2527; 0.2607; 0.2647; 0.5000; 0.7333; 0.7473; 0.7553; 0.7593; 0.9999; 1.0000"/>
-    <title>1 power units on 2026-04-26</title>
-  </rect>
-  <rect x="608" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-27</title></rect>
-  <rect x="608" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-28</title></rect>
-  <rect x="608" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-29</title></rect>
-  <rect x="608" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-04-30</title></rect>
-  <rect x="608" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-01</title></rect>
-  <rect x="608" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-02</title></rect>
-  <rect x="626" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-03</title></rect>
-  <rect x="626" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-04</title></rect>
-  <rect x="626" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-05</title></rect>
-  <rect x="626" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-06</title></rect>
-  <rect x="626" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-07</title></rect>
-  <rect x="626" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-08</title></rect>
-  <rect x="626" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-09</title></rect>
-  <rect x="644" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-10</title></rect>
-  <rect x="644" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-11</title></rect>
-  <rect x="644" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-12</title></rect>
-  <rect x="644" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-13</title></rect>
-  <rect x="644" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-14</title></rect>
-  <rect x="644" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-15</title></rect>
-  <rect x="644" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-16</title></rect>
-  <rect x="662" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-17</title></rect>
-  <rect x="662" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-18</title></rect>
-  <rect x="662" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-19</title></rect>
-  <rect x="662" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-20</title></rect>
-  <rect x="662" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-21</title></rect>
-  <rect x="662" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-22</title></rect>
-  <rect x="662" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-23</title></rect>
-  <rect x="680" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-24</title></rect>
-  <rect x="680" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-25</title></rect>
-  <rect x="680" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-26</title></rect>
-  <rect x="680" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-27</title></rect>
-  <rect x="680" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-28</title></rect>
-  <rect x="680" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-29</title></rect>
-  <rect x="680" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-30</title></rect>
-  <rect x="698" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-05-31</title></rect>
-  <rect x="698" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-01</title></rect>
-  <rect x="698" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-02</title></rect>
-  <rect x="698" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-03</title></rect>
-  <rect x="698" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-04</title></rect>
-  <rect x="698" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-05</title></rect>
-  <rect x="698" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-06</title></rect>
-  <rect x="716" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-07</title></rect>
-  <rect x="716" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-08</title></rect>
-  <rect x="716" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-09</title></rect>
-  <rect x="716" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-10</title></rect>
-  <rect x="716" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-11</title></rect>
-  <rect x="716" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-12</title></rect>
-  <rect x="716" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-13</title></rect>
-  <rect x="734" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-14</title></rect>
-  <rect x="734" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-15</title></rect>
-  <rect x="734" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-16</title></rect>
-  <rect x="734" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-17</title></rect>
-  <rect x="734" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-18</title></rect>
-  <rect x="734" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-19</title></rect>
-  <rect x="734" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-20</title></rect>
-  <rect x="752" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-21</title></rect>
-  <rect x="752" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-22</title></rect>
-  <rect x="752" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-23</title></rect>
-  <rect x="752" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-24</title></rect>
-  <rect x="752" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-25</title></rect>
-  <rect x="752" y="178" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>17 power units on 2026-06-26</title></rect>
-  <rect x="752" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-27</title></rect>
-  <rect x="770" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-06-28</title></rect>
-  <rect x="770" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>2 power units on 2026-06-29</title></rect>
-  <rect x="770" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>1 power units on 2026-06-30</title></rect>
-  <rect x="770" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-01</title></rect>
-  <rect x="770" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-02</title></rect>
-  <rect x="770" y="178" width="14" height="14" rx="2.5" fill="#216e39" stroke="#34D399" stroke-width="0.35">
-    <animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#216e39; #216e39; #216e39; #FFFFFF; #38BDF8; #216e39; #216e39; #216e39; #FFFFFF; #38BDF8; #216e39; #216e39; #216e39" keyTimes="0.0000; 0.0001; 0.2891; 0.3031; 0.3111; 0.3151; 0.5000; 0.6829; 0.6969; 0.7049; 0.7089; 0.9999; 1.0000"/>
-    <title>95 power units on 2026-07-03</title>
-  </rect>
-  <rect x="770" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-04</title></rect>
-  <rect x="788" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-05</title></rect>
-  <rect x="788" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-06</title></rect>
-  <rect x="788" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-07</title></rect>
-  <rect x="788" y="142" width="14" height="14" rx="2.5" fill="#216e39" stroke="#34D399" stroke-width="0.35"><title>32 power units on 2026-07-08</title></rect>
-  <rect x="788" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-09</title></rect>
-  <rect x="788" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-10</title></rect>
-  <rect x="788" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-11</title></rect>
-  <rect x="806" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-12</title></rect>
-  <rect x="806" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-13</title></rect>
-  <rect x="806" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>4 power units on 2026-07-14</title></rect>
-  <rect x="806" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-15</title></rect>
-  <rect x="806" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-16</title></rect>
-  <rect x="806" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-17</title></rect>
-  <rect x="806" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-18</title></rect>
-  <rect x="824" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-19</title></rect>
-  <rect x="824" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-20</title></rect>
-  <rect x="824" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>7 power units on 2026-07-21</title></rect>
-  <rect x="824" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-22</title></rect>
-  <rect x="824" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-23</title></rect>
-  <rect x="824" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-24</title></rect>
-  <rect x="824" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-25</title></rect>
-  <rect x="842" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-26</title></rect>
-  <rect x="842" y="106" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>15 power units on 2026-07-27</title></rect>
-  <rect x="842" y="124" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>16 power units on 2026-07-28</title></rect>
-  <rect x="842" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-29</title></rect>
-  <rect x="842" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-07-30</title></rect>
-  <rect x="842" y="178" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>9 power units on 2026-07-31</title></rect>
-  <rect x="842" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-01</title></rect>
-  <rect x="860" y="88" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>12 power units on 2026-08-02</title></rect>
-  <rect x="860" y="106" width="14" height="14" rx="2.5" fill="#216e39" stroke="#34D399" stroke-width="0.35">
-    <animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#216e39; #216e39; #216e39; #FFFFFF; #38BDF8; #216e39; #216e39; #216e39; #FFFFFF; #38BDF8; #216e39; #216e39; #216e39" keyTimes="0.0000; 0.0001; 0.3214; 0.3354; 0.3434; 0.3474; 0.5000; 0.6506; 0.6646; 0.6726; 0.6766; 0.9999; 1.0000"/>
-    <title>33 power units on 2026-08-03</title>
-  </rect>
-  <rect x="860" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-04</title></rect>
-  <rect x="860" y="142" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>17 power units on 2026-08-05</title></rect>
-  <rect x="860" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-06</title></rect>
-  <rect x="860" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-07</title></rect>
-  <rect x="860" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-08</title></rect>
-  <rect x="878" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-09</title></rect>
-  <rect x="878" y="106" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-10</title></rect>
-  <rect x="878" y="124" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-11</title></rect>
-  <rect x="878" y="142" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-12</title></rect>
-  <rect x="878" y="160" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-13</title></rect>
-  <rect x="878" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-14</title></rect>
-  <rect x="878" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-15</title></rect>
-  <rect x="896" y="88" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-16</title></rect>
-  <rect x="896" y="106" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>16 power units on 2026-08-17</title></rect>
-  <rect x="896" y="124" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>14 power units on 2026-08-18</title></rect>
-  <rect x="896" y="142" width="14" height="14" rx="2.5" fill="#30a14e" stroke="#34D399" stroke-width="0.35"><title>26 power units on 2026-08-19</title></rect>
-  <rect x="896" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>5 power units on 2026-08-20</title></rect>
-  <rect x="896" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on 2026-08-21</title></rect>
-  <rect x="896" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>2 power units on 2026-08-22</title></rect>
-  <rect x="914" y="88" width="14" height="14" rx="2.5" fill="#216e39" stroke="#34D399" stroke-width="0.35">
-    <animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#216e39; #216e39; #216e39; #FFFFFF; #38BDF8; #216e39; #216e39; #216e39; #FFFFFF; #38BDF8; #216e39; #216e39; #216e39" keyTimes="0.0000; 0.0001; 0.3443; 0.3583; 0.3663; 0.3703; 0.5000; 0.6277; 0.6417; 0.6497; 0.6537; 0.9999; 1.0000"/>
-    <title>41 power units on 2026-08-23</title>
-  </rect>
-  <rect x="914" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>4 power units on 2026-08-24</title></rect>
-  <rect x="914" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>4 power units on 2026-08-25</title></rect>
-  <rect x="914" y="142" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>1 power units on 2026-08-26</title></rect>
-  <rect x="914" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>2 power units on 2026-08-27</title></rect>
-  <rect x="914" y="178" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>2 power units on 2026-08-28</title></rect>
-  <rect x="914" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>1 power units on 2026-08-29</title></rect>
-  <rect x="932" y="88" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>1 power units on 2026-08-30</title></rect>
-  <rect x="932" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>6 power units on 2026-08-31</title></rect>
-  <rect x="932" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>1 power units on 2026-09-01</title></rect>
-  <rect x="932" y="142" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>2 power units on 2026-09-02</title></rect>
-  <rect x="932" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>1 power units on 2026-09-03</title></rect>
-  <rect x="932" y="178" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>1 power units on 2026-09-04</title></rect>
-  <rect x="932" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>8 power units on 2026-09-05</title></rect>
-  <rect x="950" y="88" width="14" height="14" rx="2.5" fill="#216e39" stroke="#34D399" stroke-width="0.35"><title>31 power units on 2026-09-06</title></rect>
-  <rect x="950" y="106" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>12 power units on 2026-09-07</title></rect>
-  <rect x="950" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>2 power units on 2026-09-08</title></rect>
-  <rect x="950" y="142" width="14" height="14" rx="2.5" fill="#30a14e" stroke="#34D399" stroke-width="0.35"><title>23 power units on 2026-09-09</title></rect>
-  <rect x="950" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-10</title></rect>
-  <rect x="950" y="178" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35"><title>12 power units on 2026-09-11</title></rect>
-  <rect x="950" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-12</title></rect>
-  <rect x="968" y="88" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-13</title></rect>
-  <rect x="968" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>7 power units on 2026-09-14</title></rect>
-  <rect x="968" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-15</title></rect>
-  <rect x="968" y="142" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-16</title></rect>
-  <rect x="968" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-17</title></rect>
-  <rect x="968" y="178" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-18</title></rect>
-  <rect x="968" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-19</title></rect>
-  <rect x="986" y="88" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-20</title></rect>
-  <rect x="986" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-21</title></rect>
-  <rect x="986" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35">
-    <animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#9be9a8; #9be9a8; #9be9a8; #FFFFFF; #38BDF8; #9be9a8; #9be9a8; #9be9a8; #FFFFFF; #38BDF8; #9be9a8; #9be9a8; #9be9a8" keyTimes="0.0000; 0.0001; 0.3837; 0.3977; 0.4057; 0.4097; 0.5000; 0.5883; 0.6023; 0.6103; 0.6143; 0.9999; 1.0000"/>
-    <title>9 power units on 2026-09-22</title>
-  </rect>
-  <rect x="986" y="142" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-23</title></rect>
-  <rect x="986" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-24</title></rect>
-  <rect x="986" y="178" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-25</title></rect>
-  <rect x="986" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>5 power units on 2026-09-26</title></rect>
-  <rect x="1004" y="88" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>4 power units on 2026-09-27</title></rect>
-  <rect x="1004" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>5 power units on 2026-09-28</title></rect>
-  <rect x="1004" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-29</title></rect>
-  <rect x="1004" y="142" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-09-30</title></rect>
-  <rect x="1004" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>4 power units on 2026-10-01</title></rect>
-  <rect x="1004" y="178" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>5 power units on 2026-10-02</title></rect>
-  <rect x="1004" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>9 power units on 2026-10-03</title></rect>
-  <rect x="1022" y="88" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-04</title></rect>
-  <rect x="1022" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>9 power units on 2026-10-05</title></rect>
-  <rect x="1022" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>5 power units on 2026-10-06</title></rect>
-  <rect x="1022" y="142" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-07</title></rect>
-  <rect x="1022" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-08</title></rect>
-  <rect x="1022" y="178" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-09</title></rect>
-  <rect x="1022" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-10</title></rect>
-  <rect x="1040" y="88" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-11</title></rect>
-  <rect x="1040" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-12</title></rect>
-  <rect x="1040" y="124" width="14" height="14" rx="2.5" fill="#40c463" stroke="#34D399" stroke-width="0.35">
-    <animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#40c463; #40c463; #40c463; #FFFFFF; #38BDF8; #40c463; #40c463; #40c463; #FFFFFF; #38BDF8; #40c463; #40c463; #40c463" keyTimes="0.0000; 0.0001; 0.4333; 0.4473; 0.4553; 0.4593; 0.5000; 0.5387; 0.5527; 0.5607; 0.5647; 0.9999; 1.0000"/>
-    <title>12 power units on 2026-10-13</title>
-  </rect>
-  <rect x="1040" y="142" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-14</title></rect>
-  <rect x="1040" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-15</title></rect>
-  <rect x="1040" y="178" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-16</title></rect>
-  <rect x="1040" y="196" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-17</title></rect>
-  <rect x="1058" y="88" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>8 power units on 2026-10-18</title></rect>
-  <rect x="1058" y="106" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>5 power units on 2026-10-19</title></rect>
-  <rect x="1058" y="124" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-20</title></rect>
-  <rect x="1058" y="142" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>3 power units on 2026-10-21</title></rect>
-  <rect x="1058" y="160" width="14" height="14" rx="2.5" fill="#9be9a8" stroke="#34D399" stroke-width="0.35"><title>1 power units on 2026-10-22</title></rect>
-  <rect x="1058" y="178" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on untracked</title></rect>
-  <rect x="1058" y="196" width="14" height="14" rx="2.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"><title>0 power units on untracked</title></rect>
+<g id="contribution-blocks">  <g><rect x="140" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-19</title></rect></g>
+  <g><rect x="140" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-20</title></rect></g>
+  <g><rect x="140" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-21</title></rect></g>
+  <g><rect x="140" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-22</title></rect></g>
+  <g><rect x="140" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-23</title></rect></g>
+  <g><rect x="140" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-24</title></rect></g>
+  <g><rect x="140" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-25</title></rect></g>
+  <g><rect x="158" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-26</title></rect></g>
+  <g><rect x="158" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-27</title></rect></g>
+  <g><rect x="158" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-28</title></rect></g>
+  <g><rect x="158" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-29</title></rect></g>
+  <g><rect x="158" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-30</title></rect></g>
+  <g><rect x="158" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-10-31</title></rect></g>
+  <g><rect x="158" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-01</title></rect></g>
+  <g><rect x="176" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-02</title></rect></g>
+  <g><rect x="176" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-03</title></rect></g>
+  <g><rect x="176" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-04</title></rect></g>
+  <g><rect x="176" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-05</title></rect></g>
+  <g><rect x="176" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-06</title></rect></g>
+  <g><rect x="176" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-07</title></rect></g>
+  <g><rect x="176" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-08</title></rect></g>
+  <g><rect x="194" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-09</title></rect></g>
+  <g><rect x="194" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-10</title></rect></g>
+  <g><rect x="194" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-11</title></rect></g>
+  <g><rect x="194" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-12</title></rect></g>
+  <g><rect x="194" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-13</title></rect></g>
+  <g><rect x="194" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-14</title></rect></g>
+  <g><rect x="194" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-15</title></rect></g>
+  <g><rect x="212" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-16</title></rect></g>
+  <g><rect x="212" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-17</title></rect></g>
+  <g><rect x="212" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-18</title></rect></g>
+  <g><rect x="212" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-19</title></rect></g>
+  <g><rect x="212" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-20</title></rect></g>
+  <g><rect x="212" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-21</title></rect></g>
+  <g><rect x="212" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-22</title></rect></g>
+  <g><rect x="230" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-23</title></rect></g>
+  <g><rect x="230" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-24</title></rect></g>
+  <g><rect x="230" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-25</title></rect></g>
+  <g><rect x="230" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-26</title></rect></g>
+  <g><rect x="230" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-27</title></rect></g>
+  <g><rect x="230" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-28</title></rect></g>
+  <g><rect x="230" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-29</title></rect></g>
+  <g><rect x="248" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-11-30</title></rect></g>
+  <g><rect x="248" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-01</title></rect></g>
+  <g><rect x="248" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-02</title></rect></g>
+  <g><rect x="248" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-03</title></rect></g>
+  <g><rect x="248" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-04</title></rect></g>
+  <g><rect x="248" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-05</title></rect></g>
+  <g><rect x="248" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-06</title></rect></g>
+  <g><rect x="266" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-07</title></rect></g>
+  <g><rect x="266" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-08</title></rect></g>
+  <g><rect x="266" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-09</title></rect></g>
+  <g><rect x="266" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-10</title></rect></g>
+  <g><rect x="266" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-11</title></rect></g>
+  <g><rect x="266" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-12</title></rect></g>
+  <g><rect x="266" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-13</title></rect></g>
+  <g><rect x="284" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-14</title></rect></g>
+  <g><rect x="284" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-15</title></rect></g>
+  <g><rect x="284" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-16</title></rect></g>
+  <g><rect x="284" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-17</title></rect></g>
+  <g><rect x="284" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-18</title></rect></g>
+  <g><rect x="284" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-19</title></rect></g>
+  <g><rect x="284" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-20</title></rect></g>
+  <g><rect x="302" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-21</title></rect></g>
+  <g><rect x="302" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-22</title></rect></g>
+  <g><rect x="302" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-23</title></rect></g>
+  <g><rect x="302" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-24</title></rect></g>
+  <g><rect x="302" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-25</title></rect></g>
+  <g><rect x="302" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-26</title></rect></g>
+  <g><rect x="302" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-27</title></rect></g>
+  <g><rect x="320" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-28</title></rect></g>
+  <g><rect x="320" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-29</title></rect></g>
+  <g><rect x="320" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-30</title></rect></g>
+  <g><rect x="320" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2025-12-31</title></rect></g>
+  <g><rect x="320" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-01</title></rect></g>
+  <g><rect x="320" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-02</title></rect></g>
+  <g><rect x="320" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-03</title></rect></g>
+  <g><rect x="338" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-04</title></rect></g>
+  <g><rect x="338" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-05</title></rect></g>
+  <g><rect x="338" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-06</title></rect></g>
+  <g><rect x="338" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-07</title></rect></g>
+  <g><rect x="338" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-08</title></rect></g>
+  <g><rect x="338" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-09</title></rect></g>
+  <g><rect x="338" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-10</title></rect></g>
+  <g><rect x="356" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-11</title></rect></g>
+  <g><rect x="356" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-12</title></rect></g>
+  <g><rect x="356" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-13</title></rect></g>
+  <g><rect x="356" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-14</title></rect></g>
+  <g><rect x="356" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-15</title></rect></g>
+  <g><rect x="356" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-16</title></rect></g>
+  <g><rect x="356" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-17</title></rect></g>
+  <g><rect x="374" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-18</title></rect></g>
+  <g><rect x="374" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-19</title></rect></g>
+  <g><rect x="374" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-20</title></rect></g>
+  <g><rect x="374" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-21</title></rect></g>
+  <g><rect x="374" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-22</title></rect></g>
+  <g><rect x="374" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-23</title></rect></g>
+  <g><rect x="374" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-24</title></rect></g>
+  <g><rect x="392" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-25</title></rect></g>
+  <g><rect x="392" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-26</title></rect></g>
+  <g><rect x="392" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-27</title></rect></g>
+  <g><rect x="392" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-28</title></rect></g>
+  <g><rect x="392" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-29</title></rect></g>
+  <g><rect x="392" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-30</title></rect></g>
+  <g><rect x="392" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-01-31</title></rect></g>
+  <g><rect x="410" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-01</title></rect></g>
+  <g><rect x="410" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-02</title></rect></g>
+  <g><rect x="410" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-03</title></rect></g>
+  <g><rect x="410" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-04</title></rect></g>
+  <g><rect x="410" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-05</title></rect></g>
+  <g><rect x="410" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-06</title></rect></g>
+  <g><rect x="410" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-07</title></rect></g>
+  <g><rect x="428" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-08</title></rect></g>
+  <g><rect x="428" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-09</title></rect></g>
+  <g><rect x="428" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-10</title></rect></g>
+  <g><rect x="428" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-11</title></rect></g>
+  <g><rect x="428" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-12</title></rect></g>
+  <g><rect x="428" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-13</title></rect></g>
+  <g><rect x="428" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-14</title></rect></g>
+  <g><rect x="446" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-15</title></rect></g>
+  <g><rect x="446" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-16</title></rect></g>
+  <g><rect x="446" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-17</title></rect></g>
+  <g><rect x="446" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-18</title></rect></g>
+  <g><rect x="446" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-19</title></rect></g>
+  <g><rect x="446" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-20</title></rect></g>
+  <g><rect x="446" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-21</title></rect></g>
+  <g><rect x="464" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-22</title></rect></g>
+  <g><rect x="464" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-23</title></rect></g>
+  <g><rect x="464" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-24</title></rect></g>
+  <g><rect x="464" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-25</title></rect></g>
+  <g><rect x="464" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-26</title></rect></g>
+  <g><rect x="464" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-27</title></rect></g>
+  <g><rect x="464" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-02-28</title></rect></g>
+  <g><rect x="482" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-01</title></rect></g>
+  <g><rect x="482" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-02</title></rect></g>
+  <g><rect x="482" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-03</title></rect></g>
+  <g><rect x="482" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-04</title></rect></g>
+  <g><rect x="482" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-05</title></rect></g>
+  <g><rect x="482" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-06</title></rect></g>
+  <g><rect x="482" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-07</title></rect></g>
+  <g><rect x="500" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-08</title></rect></g>
+  <g><rect x="500" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-09</title></rect></g>
+  <g><rect x="500" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-10</title></rect></g>
+  <g><rect x="500" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-11</title></rect></g>
+  <g><rect x="500" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-12</title></rect></g>
+  <g><rect x="500" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-13</title></rect></g>
+  <g><rect x="500" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-14</title></rect></g>
+  <g><rect x="518" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-15</title></rect></g>
+  <g><rect x="518" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-16</title></rect></g>
+  <g><rect x="518" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-17</title></rect></g>
+  <g><rect x="518" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-18</title></rect></g>
+  <g><rect x="518" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-19</title></rect></g>
+  <g><rect x="518" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-20</title></rect></g>
+  <g><rect x="518" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-21</title></rect></g>
+  <g><rect x="536" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-22</title></rect></g>
+  <g><rect x="536" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-23</title></rect></g>
+  <g><rect x="536" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-24</title></rect></g>
+  <g><rect x="536" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-25</title></rect></g>
+  <g><rect x="536" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-26</title></rect></g>
+  <g><rect x="536" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-27</title></rect></g>
+  <g><rect x="536" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-28</title></rect></g>
+  <g><rect x="554" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-29</title></rect></g>
+  <g><rect x="554" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-30</title></rect></g>
+  <g><rect x="554" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-03-31</title></rect></g>
+  <g><rect x="554" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-01</title></rect></g>
+  <g><rect x="554" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-02</title></rect></g>
+  <g><rect x="554" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-03</title></rect></g>
+  <g><rect x="554" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-04</title></rect></g>
+  <g><rect x="572" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-05</title></rect></g>
+  <g><rect x="572" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-06</title></rect></g>
+  <g><rect x="572" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-07</title></rect></g>
+  <g><rect x="572" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-08</title></rect></g>
+  <g><rect x="572" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-09</title></rect></g>
+  <g><rect x="572" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-10</title></rect></g>
+  <g><rect x="572" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-11</title></rect></g>
+  <g><rect x="590" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-12</title></rect></g>
+  <g><rect x="590" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-13</title></rect></g>
+  <g><rect x="590" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-14</title></rect></g>
+  <g><rect x="590" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-15</title></rect></g>
+  <g><rect x="590" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-16</title></rect></g>
+  <g><rect x="590" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-17</title></rect></g>
+  <g><rect x="590" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-18</title></rect></g>
+  <g><rect x="608" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-19</title></rect></g>
+  <g><rect x="608" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-20</title></rect></g>
+  <g><rect x="608" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-21</title></rect></g>
+  <g><rect x="608" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-22</title></rect></g>
+  <g><rect x="608" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-23</title></rect></g>
+  <g><rect x="608" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-24</title></rect></g>
+  <g><rect x="608" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-25</title></rect></g>
+  <g><rect x="626" y="88" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>1 contributions on 2026-04-26</title></rect></g>
+  <g><rect x="626" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-27</title></rect></g>
+  <g><rect x="626" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-28</title></rect></g>
+  <g><rect x="626" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-29</title></rect></g>
+  <g><rect x="626" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-04-30</title></rect></g>
+  <g><rect x="626" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-01</title></rect></g>
+  <g><rect x="626" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-02</title></rect></g>
+  <g><rect x="644" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-03</title></rect></g>
+  <g><rect x="644" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-04</title></rect></g>
+  <g><rect x="644" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-05</title></rect></g>
+  <g><rect x="644" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-06</title></rect></g>
+  <g><rect x="644" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-07</title></rect></g>
+  <g><rect x="644" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-08</title></rect></g>
+  <g><rect x="644" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-09</title></rect></g>
+  <g><rect x="662" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-10</title></rect></g>
+  <g><rect x="662" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-11</title></rect></g>
+  <g><rect x="662" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-12</title></rect></g>
+  <g><rect x="662" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-13</title></rect></g>
+  <g><rect x="662" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-14</title></rect></g>
+  <g><rect x="662" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-15</title></rect></g>
+  <g><rect x="662" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-16</title></rect></g>
+  <g><rect x="680" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-17</title></rect></g>
+  <g><rect x="680" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-18</title></rect></g>
+  <g><rect x="680" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-19</title></rect></g>
+  <g><rect x="680" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-20</title></rect></g>
+  <g><rect x="680" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-21</title></rect></g>
+  <g><rect x="680" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-22</title></rect></g>
+  <g><rect x="680" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-23</title></rect></g>
+  <g><rect x="698" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-24</title></rect></g>
+  <g><rect x="698" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-25</title></rect></g>
+  <g><rect x="698" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-26</title></rect></g>
+  <g><rect x="698" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-27</title></rect></g>
+  <g><rect x="698" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-28</title></rect></g>
+  <g><rect x="698" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-29</title></rect></g>
+  <g><rect x="698" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-30</title></rect></g>
+  <g><rect x="716" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-05-31</title></rect></g>
+  <g><rect x="716" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-01</title></rect></g>
+  <g><rect x="716" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-02</title></rect></g>
+  <g><rect x="716" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-03</title></rect></g>
+  <g><rect x="716" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-04</title></rect></g>
+  <g><rect x="716" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-05</title></rect></g>
+  <g><rect x="716" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-06</title></rect></g>
+  <g><rect x="734" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-07</title></rect></g>
+  <g><rect x="734" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-08</title></rect></g>
+  <g><rect x="734" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-09</title></rect></g>
+  <g><rect x="734" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-10</title></rect></g>
+  <g><rect x="734" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-11</title></rect></g>
+  <g><rect x="734" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-12</title></rect></g>
+  <g><rect x="734" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-13</title></rect></g>
+  <g><rect x="752" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-14</title></rect></g>
+  <g><rect x="752" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-15</title></rect></g>
+  <g><rect x="752" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-16</title></rect></g>
+  <g><rect x="752" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-17</title></rect></g>
+  <g><rect x="752" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-18</title></rect></g>
+  <g><rect x="752" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-19</title></rect></g>
+  <g><rect x="752" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-20</title></rect></g>
+  <g><rect x="770" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-21</title></rect></g>
+  <g><rect x="770" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-22</title></rect></g>
+  <g><rect x="770" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-23</title></rect></g>
+  <g><rect x="770" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-24</title></rect></g>
+  <g><rect x="770" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-25</title></rect></g>
+  <g><rect x="770" y="178" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>17 contributions on 2026-06-26</title></rect></g>
+  <g><rect x="770" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-27</title></rect></g>
+  <g><rect x="788" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-06-28</title></rect></g>
+  <g><rect x="788" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>2 contributions on 2026-06-29</title></rect></g>
+  <g><rect x="788" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>1 contributions on 2026-06-30</title></rect></g>
+  <g><rect x="788" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-01</title></rect></g>
+  <g><rect x="788" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-02</title></rect></g>
+  <g><rect x="788" y="178" width="14" height="14" fill="#a4cf63" stroke="#32432c" stroke-width="1"><animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#a4cf63; #a4cf63; #a4cf63; #b3fff2; #a4cf63; #a4cf63; #a4cf63; #b3fff2; #a4cf63; #a4cf63; #a4cf63" keyTimes="0.0000; 0.0001; 0.3039; 0.3049; 0.3229; 0.5000; 0.6941; 0.6951; 0.7131; 0.9999; 1.0000"/><title>95 contributions on 2026-07-03</title></rect><path d="M790 181h4M796 181h4M791 186v4M798 185v4" stroke="#d7eaa4" stroke-width="1" opacity=".72"/></g>
+  <g><rect x="788" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-04</title></rect></g>
+  <g><rect x="806" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-05</title></rect></g>
+  <g><rect x="806" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-06</title></rect></g>
+  <g><rect x="806" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-07</title></rect></g>
+  <g><rect x="806" y="142" width="14" height="14" fill="#a4cf63" stroke="#32432c" stroke-width="1"><title>32 contributions on 2026-07-08</title></rect></g>
+  <g><rect x="806" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-09</title></rect></g>
+  <g><rect x="806" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-10</title></rect></g>
+  <g><rect x="806" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-11</title></rect></g>
+  <g><rect x="824" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-12</title></rect></g>
+  <g><rect x="824" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-13</title></rect></g>
+  <g><rect x="824" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>4 contributions on 2026-07-14</title></rect></g>
+  <g><rect x="824" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-15</title></rect></g>
+  <g><rect x="824" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-16</title></rect></g>
+  <g><rect x="824" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-17</title></rect></g>
+  <g><rect x="824" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-18</title></rect></g>
+  <g><rect x="842" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-19</title></rect></g>
+  <g><rect x="842" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-20</title></rect></g>
+  <g><rect x="842" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>7 contributions on 2026-07-21</title></rect></g>
+  <g><rect x="842" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-22</title></rect></g>
+  <g><rect x="842" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-23</title></rect></g>
+  <g><rect x="842" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-24</title></rect></g>
+  <g><rect x="842" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-25</title></rect></g>
+  <g><rect x="860" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-26</title></rect></g>
+  <g><rect x="860" y="106" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>15 contributions on 2026-07-27</title></rect></g>
+  <g><rect x="860" y="124" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>16 contributions on 2026-07-28</title></rect></g>
+  <g><rect x="860" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-29</title></rect></g>
+  <g><rect x="860" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-07-30</title></rect></g>
+  <g><rect x="860" y="178" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>9 contributions on 2026-07-31</title></rect></g>
+  <g><rect x="860" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-01</title></rect></g>
+  <g><rect x="878" y="88" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>12 contributions on 2026-08-02</title></rect></g>
+  <g><rect x="878" y="106" width="14" height="14" fill="#a4cf63" stroke="#32432c" stroke-width="1"><title>33 contributions on 2026-08-03</title></rect></g>
+  <g><rect x="878" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-04</title></rect></g>
+  <g><rect x="878" y="142" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#5e7f40; #5e7f40; #5e7f40; #b3fff2; #5e7f40; #5e7f40; #5e7f40; #b3fff2; #5e7f40; #5e7f40; #5e7f40" keyTimes="0.0000; 0.0001; 0.3359; 0.3369; 0.3549; 0.5000; 0.6621; 0.6631; 0.6811; 0.9999; 1.0000"/><title>17 contributions on 2026-08-05</title></rect><path d="M880 145h4M886 145h4M881 150v4M888 149v4" stroke="#d7eaa4" stroke-width="1" opacity=".72"/></g>
+  <g><rect x="878" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-06</title></rect></g>
+  <g><rect x="878" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-07</title></rect></g>
+  <g><rect x="878" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-08</title></rect></g>
+  <g><rect x="896" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-09</title></rect></g>
+  <g><rect x="896" y="106" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-10</title></rect></g>
+  <g><rect x="896" y="124" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-11</title></rect></g>
+  <g><rect x="896" y="142" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-12</title></rect></g>
+  <g><rect x="896" y="160" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-13</title></rect></g>
+  <g><rect x="896" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-14</title></rect></g>
+  <g><rect x="896" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-15</title></rect></g>
+  <g><rect x="914" y="88" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-16</title></rect></g>
+  <g><rect x="914" y="106" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>16 contributions on 2026-08-17</title></rect></g>
+  <g><rect x="914" y="124" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>14 contributions on 2026-08-18</title></rect></g>
+  <g><rect x="914" y="142" width="14" height="14" fill="#78a84b" stroke="#32432c" stroke-width="1"><title>26 contributions on 2026-08-19</title></rect></g>
+  <g><rect x="914" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>5 contributions on 2026-08-20</title></rect></g>
+  <g><rect x="914" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-08-21</title></rect></g>
+  <g><rect x="914" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>2 contributions on 2026-08-22</title></rect></g>
+  <g><rect x="932" y="88" width="14" height="14" fill="#a4cf63" stroke="#32432c" stroke-width="1"><title>41 contributions on 2026-08-23</title></rect></g>
+  <g><rect x="932" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>4 contributions on 2026-08-24</title></rect></g>
+  <g><rect x="932" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>4 contributions on 2026-08-25</title></rect></g>
+  <g><rect x="932" y="142" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>1 contributions on 2026-08-26</title></rect></g>
+  <g><rect x="932" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>2 contributions on 2026-08-27</title></rect></g>
+  <g><rect x="932" y="178" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>2 contributions on 2026-08-28</title></rect></g>
+  <g><rect x="932" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>1 contributions on 2026-08-29</title></rect></g>
+  <g><rect x="950" y="88" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>1 contributions on 2026-08-30</title></rect></g>
+  <g><rect x="950" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>6 contributions on 2026-08-31</title></rect></g>
+  <g><rect x="950" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>1 contributions on 2026-09-01</title></rect></g>
+  <g><rect x="950" y="142" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>2 contributions on 2026-09-02</title></rect></g>
+  <g><rect x="950" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>1 contributions on 2026-09-03</title></rect></g>
+  <g><rect x="950" y="178" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>1 contributions on 2026-09-04</title></rect></g>
+  <g><rect x="950" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>8 contributions on 2026-09-05</title></rect></g>
+  <g><rect x="968" y="88" width="14" height="14" fill="#a4cf63" stroke="#32432c" stroke-width="1"><title>31 contributions on 2026-09-06</title></rect></g>
+  <g><rect x="968" y="106" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>12 contributions on 2026-09-07</title></rect></g>
+  <g><rect x="968" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>2 contributions on 2026-09-08</title></rect></g>
+  <g><rect x="968" y="142" width="14" height="14" fill="#78a84b" stroke="#32432c" stroke-width="1"><title>23 contributions on 2026-09-09</title></rect></g>
+  <g><rect x="968" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><animate attributeName="fill" dur="18s" repeatCount="indefinite" values="#46533b; #46533b; #46533b; #b3fff2; #46533b; #46533b; #46533b; #b3fff2; #46533b; #46533b; #46533b" keyTimes="0.0000; 0.0001; 0.3764; 0.3774; 0.3954; 0.5000; 0.6216; 0.6226; 0.6406; 0.9999; 1.0000"/><title>3 contributions on 2026-09-10</title></rect><path d="M970 163h4M976 163h4M971 168v4M978 167v4" stroke="#d7eaa4" stroke-width="1" opacity=".72"/></g>
+  <g><rect x="968" y="178" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>12 contributions on 2026-09-11</title></rect></g>
+  <g><rect x="968" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-12</title></rect></g>
+  <g><rect x="986" y="88" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-13</title></rect></g>
+  <g><rect x="986" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>7 contributions on 2026-09-14</title></rect></g>
+  <g><rect x="986" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-15</title></rect></g>
+  <g><rect x="986" y="142" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-16</title></rect></g>
+  <g><rect x="986" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-17</title></rect></g>
+  <g><rect x="986" y="178" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-18</title></rect></g>
+  <g><rect x="986" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-19</title></rect></g>
+  <g><rect x="1004" y="88" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-20</title></rect></g>
+  <g><rect x="1004" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-21</title></rect></g>
+  <g><rect x="1004" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>9 contributions on 2026-09-22</title></rect></g>
+  <g><rect x="1004" y="142" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-23</title></rect></g>
+  <g><rect x="1004" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-24</title></rect></g>
+  <g><rect x="1004" y="178" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-25</title></rect></g>
+  <g><rect x="1004" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>5 contributions on 2026-09-26</title></rect></g>
+  <g><rect x="1022" y="88" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>4 contributions on 2026-09-27</title></rect></g>
+  <g><rect x="1022" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>5 contributions on 2026-09-28</title></rect></g>
+  <g><rect x="1022" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-29</title></rect></g>
+  <g><rect x="1022" y="142" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-09-30</title></rect></g>
+  <g><rect x="1022" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>4 contributions on 2026-10-01</title></rect></g>
+  <g><rect x="1022" y="178" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>5 contributions on 2026-10-02</title></rect></g>
+  <g><rect x="1022" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>9 contributions on 2026-10-03</title></rect></g>
+  <g><rect x="1040" y="88" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-04</title></rect></g>
+  <g><rect x="1040" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>9 contributions on 2026-10-05</title></rect></g>
+  <g><rect x="1040" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>5 contributions on 2026-10-06</title></rect></g>
+  <g><rect x="1040" y="142" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-07</title></rect></g>
+  <g><rect x="1040" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-08</title></rect></g>
+  <g><rect x="1040" y="178" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-09</title></rect></g>
+  <g><rect x="1040" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-10</title></rect></g>
+  <g><rect x="1058" y="88" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-11</title></rect></g>
+  <g><rect x="1058" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-12</title></rect></g>
+  <g><rect x="1058" y="124" width="14" height="14" fill="#5e7f40" stroke="#32432c" stroke-width="1"><title>12 contributions on 2026-10-13</title></rect></g>
+  <g><rect x="1058" y="142" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-14</title></rect></g>
+  <g><rect x="1058" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-15</title></rect></g>
+  <g><rect x="1058" y="178" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-16</title></rect></g>
+  <g><rect x="1058" y="196" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-17</title></rect></g>
+  <g><rect x="1076" y="88" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>8 contributions on 2026-10-18</title></rect></g>
+  <g><rect x="1076" y="106" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>5 contributions on 2026-10-19</title></rect></g>
+  <g><rect x="1076" y="124" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-20</title></rect></g>
+  <g><rect x="1076" y="142" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>3 contributions on 2026-10-21</title></rect></g>
+  <g><rect x="1076" y="160" width="14" height="14" fill="#46533b" stroke="#32432c" stroke-width="1"><title>2 contributions on 2026-10-22</title></rect></g>
+  <g><rect x="1076" y="178" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-10-23</title></rect></g>
+  <g><rect x="1076" y="196" width="14" height="14" fill="#373c35" stroke="#58604f" stroke-width="1"><title>0 contributions on 2026-10-24</title></rect></g>
 </g>
-
-<!-- Holographic Target Acquisition Lock Brackets -->
-<g id="target-lock-brackets">
-  <g class="lock-bracket" opacity="0">
-    <path d="M605 89 V85 H609 M621 85 H625 V89 M625 101 V105 H621 M609 105 H605 V101" fill="none" stroke="#FACC15" stroke-width="1.5"/>
-    <circle cx="615" cy="95" r="2" fill="#FACC15"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.2387; 0.2407; 0.2527; 0.2607; 0.5000; 0.7333; 0.7353; 0.7473; 0.7553; 0.9999; 1.0000"/>
-  </g>
-  <g class="lock-bracket" opacity="0">
-    <path d="M767 179 V175 H771 M783 175 H787 V179 M787 191 V195 H783 M771 195 H767 V191" fill="none" stroke="#FACC15" stroke-width="1.5"/>
-    <circle cx="777" cy="185" r="2" fill="#FACC15"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.2891; 0.2911; 0.3031; 0.3111; 0.5000; 0.6829; 0.6849; 0.6969; 0.7049; 0.9999; 1.0000"/>
-  </g>
-  <g class="lock-bracket" opacity="0">
-    <path d="M857 107 V103 H861 M873 103 H877 V107 M877 119 V123 H873 M861 123 H857 V119" fill="none" stroke="#FACC15" stroke-width="1.5"/>
-    <circle cx="867" cy="113" r="2" fill="#FACC15"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3214; 0.3234; 0.3354; 0.3434; 0.5000; 0.6506; 0.6526; 0.6646; 0.6726; 0.9999; 1.0000"/>
-  </g>
-  <g class="lock-bracket" opacity="0">
-    <path d="M911 89 V85 H915 M927 85 H931 V89 M931 101 V105 H927 M915 105 H911 V101" fill="none" stroke="#FACC15" stroke-width="1.5"/>
-    <circle cx="921" cy="95" r="2" fill="#FACC15"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3443; 0.3463; 0.3583; 0.3663; 0.5000; 0.6277; 0.6297; 0.6417; 0.6497; 0.9999; 1.0000"/>
-  </g>
-  <g class="lock-bracket" opacity="0">
-    <path d="M983 125 V121 H987 M999 121 H1003 V125 M1003 137 V141 H999 M987 141 H983 V137" fill="none" stroke="#FACC15" stroke-width="1.5"/>
-    <circle cx="993" cy="131" r="2" fill="#FACC15"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3837; 0.3857; 0.3977; 0.4057; 0.5000; 0.5883; 0.5903; 0.6023; 0.6103; 0.9999; 1.0000"/>
-  </g>
-  <g class="lock-bracket" opacity="0">
-    <path d="M1037 125 V121 H1041 M1053 121 H1057 V125 M1057 137 V141 H1053 M1041 141 H1037 V137" fill="none" stroke="#FACC15" stroke-width="1.5"/>
-    <circle cx="1047" cy="131" r="2" fill="#FACC15"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.4333; 0.4353; 0.4473; 0.4553; 0.5000; 0.5387; 0.5407; 0.5527; 0.5607; 0.9999; 1.0000"/>
-  </g>
+<g id="terrain" shape-rendering="crispEdges">
+  <rect y="248" width="1180" height="92" fill="#63462f"/>
+  <rect y="248" width="1180" height="8" fill="#719b43"/>
+  <rect y="256" width="1180" height="5" fill="#526f34"/>
+  <path d="M0 277h48v12h38v-12h51v12h26v-12h114v12h38v-12h127v12h35v-12h140v12h24v-12h173v12h31v-12h130v12h47v-12h72v63H0z" fill="#765238"/>
+  <path d="M0 311h76v-12h24v12h136v-12h22v12h158v-12h34v12h125v-12h23v12h202v-12h30v12h146v-12h27v12h97v29H0z" fill="#553d2c"/>
 </g>
-
-
-<!-- World-Space High-Intensity Precision Railgun Lances -->
-<g id="world-space-railguns">
-  <g class="railgun-lance" opacity="0">
-    <line x1="611.5" y1="256" x2="611.5" y2="95" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="611.5" y1="256" x2="611.5" y2="95" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <line x1="618.5" y1="256" x2="618.5" y2="95" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="618.5" y1="256" x2="618.5" y2="95" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.2517; 0.2527; 0.2607; 0.2627; 0.5000; 0.7463; 0.7473; 0.7553; 0.7573; 0.9999; 1.0000"/>
-  </g>
-  <g class="railgun-lance" opacity="0">
-    <line x1="773.5" y1="256" x2="773.5" y2="185" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="773.5" y1="256" x2="773.5" y2="185" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <line x1="780.5" y1="256" x2="780.5" y2="185" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="780.5" y1="256" x2="780.5" y2="185" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3021; 0.3031; 0.3111; 0.3131; 0.5000; 0.6959; 0.6969; 0.7049; 0.7069; 0.9999; 1.0000"/>
-  </g>
-  <g class="railgun-lance" opacity="0">
-    <line x1="863.5" y1="256" x2="863.5" y2="113" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="863.5" y1="256" x2="863.5" y2="113" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <line x1="870.5" y1="256" x2="870.5" y2="113" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="870.5" y1="256" x2="870.5" y2="113" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3344; 0.3354; 0.3434; 0.3454; 0.5000; 0.6636; 0.6646; 0.6726; 0.6746; 0.9999; 1.0000"/>
-  </g>
-  <g class="railgun-lance" opacity="0">
-    <line x1="917.5" y1="256" x2="917.5" y2="95" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="917.5" y1="256" x2="917.5" y2="95" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <line x1="924.5" y1="256" x2="924.5" y2="95" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="924.5" y1="256" x2="924.5" y2="95" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3573; 0.3583; 0.3663; 0.3683; 0.5000; 0.6407; 0.6417; 0.6497; 0.6517; 0.9999; 1.0000"/>
-  </g>
-  <g class="railgun-lance" opacity="0">
-    <line x1="989.5" y1="256" x2="989.5" y2="131" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="989.5" y1="256" x2="989.5" y2="131" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <line x1="996.5" y1="256" x2="996.5" y2="131" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="996.5" y1="256" x2="996.5" y2="131" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3967; 0.3977; 0.4057; 0.4077; 0.5000; 0.6013; 0.6023; 0.6103; 0.6123; 0.9999; 1.0000"/>
-  </g>
-  <g class="railgun-lance" opacity="0">
-    <line x1="1043.5" y1="256" x2="1043.5" y2="131" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="1043.5" y1="256" x2="1043.5" y2="131" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <line x1="1050.5" y1="256" x2="1050.5" y2="131" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="1050.5" y1="256" x2="1050.5" y2="131" stroke="#38BDF8" stroke-width="4.5" stroke-opacity="0.45" stroke-linecap="round"/>
-    <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.4463; 0.4473; 0.4553; 0.4573; 0.5000; 0.5517; 0.5527; 0.5607; 0.5627; 0.9999; 1.0000"/>
-  </g>
-</g>
-
-
-<!-- Crisp Shockwave Detonations on Struck Cells -->
-<g id="explosive-impacts">
-  <g class="explosive-impact">
-    <circle cx="615" cy="95" r="0" fill="none" stroke="#FACC15" stroke-width="1.8" class="shockwave-primary" opacity="0">
-      <animate attributeName="r" dur="18s" repeatCount="indefinite" values="0; 0; 0; 3; 14; 0; 0; 3; 14; 0; 0" keyTimes="0.0000; 0.0001; 0.2517; 0.2527; 0.2607; 0.5000; 0.7463; 0.7473; 0.7553; 0.9999; 1.0000"/>
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.2517; 0.2527; 0.2607; 0.5000; 0.7463; 0.7473; 0.7553; 0.9999; 1.0000"/>
-    </circle>
-    <circle cx="615" cy="95" r="4" fill="#FFFFFF" opacity="0">
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.2517; 0.2527; 0.2607; 0.5000; 0.7463; 0.7473; 0.7553; 0.9999; 1.0000"/>
-    </circle>
-  </g>
-  <g class="explosive-impact">
-    <circle cx="777" cy="185" r="0" fill="none" stroke="#FACC15" stroke-width="1.8" class="shockwave-primary" opacity="0">
-      <animate attributeName="r" dur="18s" repeatCount="indefinite" values="0; 0; 0; 3; 14; 0; 0; 3; 14; 0; 0" keyTimes="0.0000; 0.0001; 0.3021; 0.3031; 0.3111; 0.5000; 0.6959; 0.6969; 0.7049; 0.9999; 1.0000"/>
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3021; 0.3031; 0.3111; 0.5000; 0.6959; 0.6969; 0.7049; 0.9999; 1.0000"/>
-    </circle>
-    <circle cx="777" cy="185" r="4" fill="#FFFFFF" opacity="0">
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3021; 0.3031; 0.3111; 0.5000; 0.6959; 0.6969; 0.7049; 0.9999; 1.0000"/>
-    </circle>
-  </g>
-  <g class="explosive-impact">
-    <circle cx="867" cy="113" r="0" fill="none" stroke="#FACC15" stroke-width="1.8" class="shockwave-primary" opacity="0">
-      <animate attributeName="r" dur="18s" repeatCount="indefinite" values="0; 0; 0; 3; 14; 0; 0; 3; 14; 0; 0" keyTimes="0.0000; 0.0001; 0.3344; 0.3354; 0.3434; 0.5000; 0.6636; 0.6646; 0.6726; 0.9999; 1.0000"/>
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3344; 0.3354; 0.3434; 0.5000; 0.6636; 0.6646; 0.6726; 0.9999; 1.0000"/>
-    </circle>
-    <circle cx="867" cy="113" r="4" fill="#FFFFFF" opacity="0">
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3344; 0.3354; 0.3434; 0.5000; 0.6636; 0.6646; 0.6726; 0.9999; 1.0000"/>
-    </circle>
-  </g>
-  <g class="explosive-impact">
-    <circle cx="921" cy="95" r="0" fill="none" stroke="#FACC15" stroke-width="1.8" class="shockwave-primary" opacity="0">
-      <animate attributeName="r" dur="18s" repeatCount="indefinite" values="0; 0; 0; 3; 14; 0; 0; 3; 14; 0; 0" keyTimes="0.0000; 0.0001; 0.3573; 0.3583; 0.3663; 0.5000; 0.6407; 0.6417; 0.6497; 0.9999; 1.0000"/>
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3573; 0.3583; 0.3663; 0.5000; 0.6407; 0.6417; 0.6497; 0.9999; 1.0000"/>
-    </circle>
-    <circle cx="921" cy="95" r="4" fill="#FFFFFF" opacity="0">
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3573; 0.3583; 0.3663; 0.5000; 0.6407; 0.6417; 0.6497; 0.9999; 1.0000"/>
-    </circle>
-  </g>
-  <g class="explosive-impact">
-    <circle cx="993" cy="131" r="0" fill="none" stroke="#FACC15" stroke-width="1.8" class="shockwave-primary" opacity="0">
-      <animate attributeName="r" dur="18s" repeatCount="indefinite" values="0; 0; 0; 3; 14; 0; 0; 3; 14; 0; 0" keyTimes="0.0000; 0.0001; 0.3967; 0.3977; 0.4057; 0.5000; 0.6013; 0.6023; 0.6103; 0.9999; 1.0000"/>
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3967; 0.3977; 0.4057; 0.5000; 0.6013; 0.6023; 0.6103; 0.9999; 1.0000"/>
-    </circle>
-    <circle cx="993" cy="131" r="4" fill="#FFFFFF" opacity="0">
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3967; 0.3977; 0.4057; 0.5000; 0.6013; 0.6023; 0.6103; 0.9999; 1.0000"/>
-    </circle>
-  </g>
-  <g class="explosive-impact">
-    <circle cx="1047" cy="131" r="0" fill="none" stroke="#FACC15" stroke-width="1.8" class="shockwave-primary" opacity="0">
-      <animate attributeName="r" dur="18s" repeatCount="indefinite" values="0; 0; 0; 3; 14; 0; 0; 3; 14; 0; 0" keyTimes="0.0000; 0.0001; 0.4463; 0.4473; 0.4553; 0.5000; 0.5517; 0.5527; 0.5607; 0.9999; 1.0000"/>
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.4463; 0.4473; 0.4553; 0.5000; 0.5517; 0.5527; 0.5607; 0.9999; 1.0000"/>
-    </circle>
-    <circle cx="1047" cy="131" r="4" fill="#FFFFFF" opacity="0">
-      <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.4463; 0.4473; 0.4553; 0.5000; 0.5517; 0.5527; 0.5607; 0.9999; 1.0000"/>
-    </circle>
-  </g>
-</g>
-
-
-<!-- Bottom HUD Legend & Defense Grid Metadata -->
 <g transform="translate(140, 320)">
-  <text x="0" y="8" class="legend-text">POWER NODES: LOW</text>
-  <rect x="115" y="0" width="10" height="10" rx="2" fill="#0F172A" stroke="#1E293B" stroke-width="0.75"/>
-  <rect x="129" y="0" width="10" height="10" rx="2" fill="#064E3B"/>
-  <rect x="143" y="0" width="10" height="10" rx="2" fill="#047857"/>
-  <rect x="157" y="0" width="10" height="10" rx="2" fill="#10B981"/>
-  <rect x="171" y="0" width="10" height="10" rx="2" fill="#34D399"/>
-  <text x="189" y="8" class="legend-text">OVERDRIVE</text>
+  <text x="0" y="8" class="legend-text">CONTRIBUTIONS</text>
+  <rect x="115" y="0" width="10" height="10" fill="#373c35" stroke="#58604f" stroke-width="0.75"/>
+  <rect x="129" y="0" width="10" height="10" fill="#46533b"/>
+  <rect x="143" y="0" width="10" height="10" fill="#5e7f40"/>
+  <rect x="157" y="0" width="10" height="10" fill="#78a84b"/>
+  <rect x="171" y="0" width="10" height="10" fill="#a4cf63"/>
+  <text x="189" y="8" class="legend-text">MORE</text>
 </g>
 
-<text x="1040" y="328" class="hud-meta" text-anchor="end">[ARCADE DEFENSE GRID // SECTOR: SOMYACODES07]</text>
+<text x="1156" y="328" class="hud-meta" text-anchor="end">Mined over the last 52 weeks</text>
+<g id="steve-mining" shape-rendering="crispEdges">
+  <g id="steve-sprite" transform="translate(90 148)">
+    <animateTransform attributeName="transform" type="translate" dur="18s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1" values="90 148;1026 148;90 148"/>
+    <g transform="scale(1.35)">
+      <g id="steve-bob" transform="translate(0 0)">
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 -1;0 0;0 -1;0 0" dur=".72s" repeatCount="indefinite"/>
+        <!-- Wide, faceted diamond head and a wooden handle that meets Steve's grip -->
+        <g id="diamond-pickaxe" transform="rotate(-24 31 43)">
+          <path d="M30 44L45 12" stroke="#68462d" stroke-width="5" stroke-linecap="square"/>
+          <path d="M30 43L45 13" stroke="#a47b45" stroke-width="1.5"/>
+          <path d="M29 11l6-7 5 5 6-7 6 7 6-6 10 10-7 7-5-4-6 7-6-6-6 7-6-6-5 5-7-7z" fill="#126d78"/>
+          <path d="M31 9l4-5 5 5 6-7 6 6 6-6 8 8-6 6-5-4-6 7-6-6-6 7-6-6-4 4-5-5z" fill="#37d7ce"/>
+          <path d="M35 6l5 3 6-7 5 5 6-6 4 4-6 1-5 6-5-4-6 7-5-5-4 3-3-3z" fill="#b4fff0"/>
+          <path d="M31 12l5 2 4-4 5 5-6 7-6-6-5 4-4-4zM50 14l6-6 5 4 5-4 5 5-6 6-5-4-6 7-5-5z" fill="#1ba3a4"/>
+          <path d="M43 10l4-5 5 5-4 5z" fill="#d7fff4"/>
+          <animateTransform attributeName="transform" type="rotate" values="-28 31 43;12 31 43;-28 31 43" dur=".72s" repeatCount="indefinite"/>
+        </g>
 
-<!-- Dual-Hull Starfighter Jet & Forward Boresight Sighting Laser -->
-<g id="starfighter">
-  <!-- Forward Boresight Sighting Laser Guide -->
-  <g id="boresight-reticle">
-  <!-- Projected Sighting Guide -->
-  <line x1="0" y1="-8" x2="0" y2="-180" stroke="#22D3EE" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.6" class="sighting-laser"/>
-  
-  <!-- Forward Gun-Sight Ring -->
-  <circle cx="0" cy="-60" r="16" fill="none" stroke="#22D3EE" stroke-width="1.4" opacity="0.75"/>
-  <circle cx="0" cy="-60" r="24" fill="none" stroke="#38BDF8" stroke-width="1" stroke-dasharray="6 3" opacity="0.5"/>
-  
-  <!-- Directional Crosshair Ticks -->
-  <line x1="0" y1="-74" x2="0" y2="-66" stroke="#22D3EE" stroke-width="1.5"/>
-  <line x1="0" y1="-54" x2="0" y2="-46" stroke="#22D3EE" stroke-width="1.5"/>
-  <line x1="-14" y1="-60" x2="-6" y2="-60" stroke="#22D3EE" stroke-width="1.5"/>
-  <line x1="6" y1="-60" x2="14" y2="-60" stroke="#22D3EE" stroke-width="1.5"/>
-  
-  <!-- Flashing Center Pip -->
-  <circle cx="0" cy="-60" r="2" fill="#FACC15">
-    <animate attributeName="opacity" values="1;0.3;1" dur="0.6s" repeatCount="indefinite"/>
-  </circle>
-</g>
+        <!-- Back arm and squared shirt retain the existing outfit colors -->
+        <path d="M2 29h7v19H2z" fill="#b8794c"/>
+        <path d="M2 29h3v19H2z" fill="#bf8053"/>
+        <path d="M4 25h27v27H4z" fill="#397da0"/>
+        <path d="M4 25h6v27H4zM25 25h6v27h-6z" fill="#2b6383"/>
+        <path d="M10 25h15v3H10z" fill="#397da0"/>
 
-  <!-- Dual-Hull Arcade Starfighter Chassis -->
-  <g transform="translate(0,0)">
-    <!-- Expanding Ion Particle Glow -->
-    <ellipse cx="0" cy="18" rx="14" ry="3" fill="url(#ionGlow)" opacity="0.7">
-      <animate attributeName="rx" values="12;18;13;17" dur="0.2s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0.5;0.85;0.4;0.9" dur="0.2s" repeatCount="indefinite"/>
-    </ellipse>
+        <!-- Classic square Steve face: brown hair, blue eyes, nose and beard -->
+        <rect x="2" y="0" width="29" height="25" fill="#bf8053"/>
+        <path d="M2 0h29v5H8v4H2zM27 5h4v10h-4z" fill="#4d3527"/>
+        <path d="M2 5h5v4H2zM25 5h2v4h-2z" fill="#4d3527"/>
+        <rect x="7" y="10" width="7" height="5" fill="#f3ead5"/>
+        <rect x="20" y="10" width="7" height="5" fill="#f3ead5"/>
+        <rect x="10" y="10" width="4" height="5" fill="#4c91a5"/>
+        <rect x="20" y="10" width="4" height="5" fill="#4c91a5"/>
+        <path d="M14 16h5v4h-5z" fill="#a76543"/>
+        <path d="M10 18h5v3h-5zM18 18h5v3h-5zM8 21h17v4H8zM5 18h4v7H5zM25 18h4v7h-4z" fill="#6f4633"/>
+        <rect x="14" y="21" width="5" height="2" fill="#a76543"/>
 
-    <!-- Twin Wingtip Plasma Railgun Cannons -->
-    <rect x="-21" y="-8" width="2.5" height="18" rx="1" fill="#7DD3FC"/>
-    <rect x="18.5" y="-8" width="2.5" height="18" rx="1" fill="#7DD3FC"/>
-    <circle cx="-19.75" cy="-8" r="1.8" fill="#22D3EE">
-      <animate attributeName="opacity" values="0.6;1;0.6" dur="0.6s" repeatCount="indefinite"/>
-    </circle>
-    <circle cx="19.75" cy="-8" r="1.8" fill="#22D3EE">
-      <animate attributeName="opacity" values="0.6;1;0.6" dur="0.6s" repeatCount="indefinite"/>
-    </circle>
+        <!-- Forearm and hand sit over the haft to make the grip read clearly -->
+        <path d="M28 28h7v9h-7z" fill="#b8794c"/>
+        <path d="M29 35h8v8h-8z" fill="#d3915e"/>
+        <path d="M28 36h4v7h-4z" fill="#bf8053"/>
+        <path d="M26 35h5v8h-5z" fill="#397da0"/>
 
-    <!-- Port & Starboard Twin Fuselage Pods -->
-    <polygon points="-14,-16 -7,-16 -5,9 -16,9" fill="#38BDF8" stroke="#0284C7" stroke-width="1.2"/>
-    <polygon points="7,-16 14,-16 16,9 5,9" fill="#38BDF8" stroke="#0284C7" stroke-width="1.2"/>
+        <!-- Split blue trousers and the same dark boots, with a subtle walking cycle -->
+        <g id="left-leg" transform="rotate(-4 10 52)">
+          <path d="M4 51h12v18H4z" fill="#354d83"/>
+          <path d="M4 51h5v18H4z" fill="#405c96"/>
+          <path d="M2 68h14v7H2z" fill="#49372c"/>
+          <animateTransform attributeName="transform" type="rotate" values="-8 10 52;8 10 52;-8 10 52" dur=".72s" repeatCount="indefinite"/>
+        </g>
+        <g id="right-leg" transform="rotate(4 22 52)">
+          <path d="M17 51h12v18H17z" fill="#405c96"/>
+          <path d="M24 51h5v18h-5z" fill="#354d83"/>
+          <path d="M16 68h14v7H16z" fill="#49372c"/>
+          <animateTransform attributeName="transform" type="rotate" values="8 22 52;-8 22 52;8 22 52" dur=".72s" repeatCount="indefinite"/>
+        </g>
 
-    <!-- Center Deck Armor & Delta Wing Bridge -->
-    <polygon points="-7,-7 7,-7 18,9 5,6 -5,6 -18,9" fill="#0284C7"/>
-    <polygon points="0,-12 6,4 0,1 -6,4" fill="#0F172A"/>
-
-    <!-- Crystalline Pilot Canopy -->
-    <ellipse cx="0" cy="-3" rx="3.2" ry="5.8" fill="#E0F2FE" opacity="0.95"/>
-    <ellipse cx="0" cy="-4.5" rx="1.5" ry="2.6" fill="#FFFFFF"/>
-
-    <!-- Twin High-Frequency Plasma Thruster Flames -->
-    <g id="twin-thrusters">
-      <!-- Left Thruster Flame -->
-      <polygon points="-13,9 -8,9 -10.5,26" fill="url(#plasmaFlame)">
-        <animate attributeName="opacity" values="0.75;1;0.6;0.95;0.7;1" dur="0.16s" repeatCount="indefinite"/>
-      </polygon>
-      <polygon points="-12,9 -9,9 -10.5,15" fill="#FFFFFF">
-        <animate attributeName="opacity" values="0.8;1;0.7;1" dur="0.16s" repeatCount="indefinite"/>
-      </polygon>
-
-      <!-- Right Thruster Flame -->
-      <polygon points="8,9 13,9 10.5,26" fill="url(#plasmaFlame)">
-        <animate attributeName="opacity" values="0.75;1;0.6;0.95;0.7;1" dur="0.16s" repeatCount="indefinite"/>
-      </polygon>
-      <polygon points="9,9 12,9 10.5,15" fill="#FFFFFF">
-        <animate attributeName="opacity" values="0.8;1;0.7;1" dur="0.16s" repeatCount="indefinite"/>
-      </polygon>
+        <!-- Contact pulse lands on the same contribution column as the tool -->
+        <g id="tool-impact" transform="translate(46 13)" opacity="0">
+          <path d="M0 -5v-4M-5 0h-4M0 5v4M5 0h4" stroke="#d7fff4" stroke-width="2"/>
+          <rect x="-8" y="-8" width="2" height="2" fill="#56e2d2"/>
+          <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;.36;.44;.58;1" dur=".72s" repeatCount="indefinite"/>
+        </g>
+      </g>
     </g>
   </g>
-
-  <!-- Smooth Spline Horizontal Patrol Kinematics -->
-  <animateTransform attributeName="transform" attributeType="XML" type="translate"
-    dur="18s" repeatCount="indefinite" calcMode="spline"
-    keyTimes="0; 0.5; 1"
-    keySplines="0.45 0 0.55 1; 0.45 0 0.55 1"
-    values="147,270; 1065,270; 147,270"/>
 </g>
+<g id="mining-impact-0" transform="translate(795 185)" opacity="0" shape-rendering="crispEdges">
+  <rect x="-7" y="-3" width="3" height="3" fill="#9bf9ed"/><rect x="4" y="-6" width="3" height="3" fill="#55d8ce"/>
+  <rect x="-3" y="4" width="3" height="3" fill="#e9d68d"/><rect x="6" y="3" width="2" height="2" fill="#c6fff4"/>
+  <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3029; 0.3049; 0.3249; 0.6931; 0.6951; 0.7151; 0.9999; 1.0000"/>
+  <animateTransform attributeName="transform" type="translate" additive="sum" dur="18s" repeatCount="indefinite" values="0 0; 0 0; 0 0; -4 -4; -8 -9; 0 0; 4 -5; 8 -10; 0 0; 0 0" keyTimes="0.0000; 0.0001; 0.3029; 0.3049; 0.3249; 0.6931; 0.6951; 0.7151; 0.9999; 1.0000"/>
+</g>
+<g id="mining-impact-1" transform="translate(885 149)" opacity="0" shape-rendering="crispEdges">
+  <rect x="-7" y="-3" width="3" height="3" fill="#9bf9ed"/><rect x="4" y="-6" width="3" height="3" fill="#55d8ce"/>
+  <rect x="-3" y="4" width="3" height="3" fill="#e9d68d"/><rect x="6" y="3" width="2" height="2" fill="#c6fff4"/>
+  <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3349; 0.3369; 0.3569; 0.6611; 0.6631; 0.6831; 0.9999; 1.0000"/>
+  <animateTransform attributeName="transform" type="translate" additive="sum" dur="18s" repeatCount="indefinite" values="0 0; 0 0; 0 0; -4 -4; -8 -9; 0 0; 4 -5; 8 -10; 0 0; 0 0" keyTimes="0.0000; 0.0001; 0.3349; 0.3369; 0.3569; 0.6611; 0.6631; 0.6831; 0.9999; 1.0000"/>
+</g>
+<g id="mining-impact-2" transform="translate(975 167)" opacity="0" shape-rendering="crispEdges">
+  <rect x="-7" y="-3" width="3" height="3" fill="#9bf9ed"/><rect x="4" y="-6" width="3" height="3" fill="#55d8ce"/>
+  <rect x="-3" y="4" width="3" height="3" fill="#e9d68d"/><rect x="6" y="3" width="2" height="2" fill="#c6fff4"/>
+  <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.3754; 0.3774; 0.3974; 0.6206; 0.6226; 0.6426; 0.9999; 1.0000"/>
+  <animateTransform attributeName="transform" type="translate" additive="sum" dur="18s" repeatCount="indefinite" values="0 0; 0 0; 0 0; -4 -4; -8 -9; 0 0; 4 -5; 8 -10; 0 0; 0 0" keyTimes="0.0000; 0.0001; 0.3754; 0.3774; 0.3974; 0.6206; 0.6226; 0.6426; 0.9999; 1.0000"/>
+</g>
+<g id="mining-impact-3" transform="translate(1029 167)" opacity="0" shape-rendering="crispEdges">
+  <rect x="-7" y="-3" width="3" height="3" fill="#9bf9ed"/><rect x="4" y="-6" width="3" height="3" fill="#55d8ce"/>
+  <rect x="-3" y="4" width="3" height="3" fill="#e9d68d"/><rect x="6" y="3" width="2" height="2" fill="#c6fff4"/>
+  <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 0; 0; 1; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.4096; 0.4116; 0.4316; 0.5864; 0.5884; 0.6084; 0.9999; 1.0000"/>
+  <animateTransform attributeName="transform" type="translate" additive="sum" dur="18s" repeatCount="indefinite" values="0 0; 0 0; 0 0; -4 -4; -8 -9; 0 0; 4 -5; 8 -10; 0 0; 0 0" keyTimes="0.0000; 0.0001; 0.4096; 0.4116; 0.4316; 0.5864; 0.5884; 0.6084; 0.9999; 1.0000"/>
+</g>
+<g id="mining-impact-4" transform="translate(1083 167)" opacity="0" shape-rendering="crispEdges">
+  <rect x="-7" y="-3" width="3" height="3" fill="#9bf9ed"/><rect x="4" y="-6" width="3" height="3" fill="#55d8ce"/>
+  <rect x="-3" y="4" width="3" height="3" fill="#e9d68d"/><rect x="6" y="3" width="2" height="2" fill="#c6fff4"/>
+  <animate attributeName="opacity" dur="18s" repeatCount="indefinite" values="0; 0; 0; 1; 1; 0; 0; 0; 0; 0" keyTimes="0.0000; 0.0001; 0.4980; 0.5000; 0.5002; 0.5004; 0.5200; 0.5202; 0.9999; 1.0000"/>
+  <animateTransform attributeName="transform" type="translate" additive="sum" dur="18s" repeatCount="indefinite" values="0 0; 0 0; 0 0; -4 -4; 4 -5; 0 0; -8 -9; 8 -10; 0 0; 0 0" keyTimes="0.0000; 0.0001; 0.4980; 0.5000; 0.5002; 0.5004; 0.5200; 0.5202; 0.9999; 1.0000"/>
+</g>
+<rect x="1" y="1" width="1178" height="338" fill="none" stroke="#111811" stroke-width="2"/>
 </svg>

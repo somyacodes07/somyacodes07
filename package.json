@@ -1,7 +1,7 @@
 {
   "name": "somyacodes07",
   "version": "1.0.0",
-  "description": "Interactive retro arcade space defender GitHub profile and live contribution jet heatmap",
+  "description": "Minecraft themed GitHub profile and live contribution mining heatmap",
   "type": "module",
   "engines": {
     "node": ">=18"
@@ -15,7 +15,8 @@
     "heatmap",
     "svg",
     "animation",
-    "retro-arcade"
+    "minecraft",
+    "overworld"
   ],
   "author": "somyacodes07",
   "license": "MIT"

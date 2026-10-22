@@ -1,4 +1,4 @@
-name: Update GitHub Profile & Jet Heatmap SVGs
+name: Update Minecraft Profile & Contribution SVGs
 
 on:
   schedule:
@@ -28,10 +28,10 @@ jobs:
         with:
           node-version: 20
 
-      - name: Run Test Suite
+      - name: Verify profile generator
         run: npm test
 
-      - name: Generate Live GitHub Profile Cards & Jet Heatmap
+      - name: Generate live Minecraft profile and contribution heatmap
         env:
           GH_USERNAME: ${{ github.repository_owner }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

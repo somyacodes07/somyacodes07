@@ -10,7 +10,7 @@ import {
   buildProfileSvg
 } from '../profile.mjs';
 
-describe('Profile System & Central Config Suite', () => {
+describe('Minecraft Profile System & Central Config Suite', () => {
 
   describe('Configuration Loading & Sanitization', () => {
     it('should fallback gracefully to DEFAULT_CONFIG if file does not exist', () => {
@@ -67,20 +67,24 @@ describe('Profile System & Central Config Suite', () => {
       assert.ok(darkRender.clipPaths.includes('<clipPath id="lc0">'));
       assert.ok(darkRender.textElements.includes('<tspan'));
       assert.ok(darkRender.cursorElement.includes('cursor-blink'));
+      assert.strictEqual(lines[0].key, 'Subject', 'The inventory starts with profile details, not a duplicate title');
+      assert.ok(darkRender.textElements.includes('y="66"'), 'Body text begins below the inventory title bar');
+      const toolChain = darkRender.textElements.match(/<tspan class="key">ToolChain<\/tspan>.*?<tspan class="value"[^>]*>Hermes \/ Codex \/ Claude Code, Docker, Obsidian<\/tspan>/);
+      assert.ok(toolChain, 'Long skill values use a fitted font size and remain in the card');
 
       const lightRender = renderTerminalLines(lines, 'light');
       assert.ok(lightRender.clipPaths.includes('<clipPath id="lc0">'));
-      assert.ok(lightRender.textElements.includes('fill="#1E293B"'));
+      assert.ok(lightRender.textElements.includes('fill="#22291e"'));
     });
   });
 
-  describe('Biometric Avatar HUD & Profile SVG Rendering', () => {
-    it('should generate holographic avatar HUD with custom badges and image target', () => {
+  describe('Pixel Frame & Profile SVG Rendering', () => {
+    it('should generate a block-built player frame with custom badges and image target', () => {
       const hudSvg = renderAvatarHud(DEFAULT_CONFIG, 'data:image/png;base64,TEST_DATA', 'dark');
       assert.ok(hudSvg.includes('<image'));
       assert.ok(hudSvg.includes('data:image/png;base64,TEST_DATA'));
-      assert.ok(hudSvg.includes('AVATAR.HUD // BIOMETRIC') || hudSvg.includes('IDENT: @'));
-      assert.ok(hudSvg.includes('PILOT // ONLINE'));
+      assert.ok(hudSvg.includes('PLAYER SKIN'));
+      assert.ok(hudSvg.includes('MINER // ONLINE'));
     });
 
     it('should fallback to GitHub avatar URL if data URI is not provided', () => {
@@ -94,12 +98,13 @@ describe('Profile System & Central Config Suite', () => {
       assert.ok(darkSvg.endsWith('</svg>'));
       assert.ok(darkSvg.includes('width="1180"'));
       assert.ok(darkSvg.includes('height="586"'));
-      assert.ok(darkSvg.includes('#0B1120'));
+      assert.ok(darkSvg.includes('#171b16'));
+      assert.ok(darkSvg.includes('PLAYER INVENTORY'));
 
       const lightSvg = buildProfileSvg(DEFAULT_CONFIG, { theme: 'light' });
       assert.ok(lightSvg.startsWith('<svg'));
       assert.ok(lightSvg.endsWith('</svg>'));
-      assert.ok(lightSvg.includes('#FFFFFF') || lightSvg.includes('#F8FAFC'));
+      assert.ok(lightSvg.includes('#e7eadf') || lightSvg.includes('#d9dec8'));
     });
   });
 
