@@ -333,6 +333,7 @@ export function renderAvatarHud(config, avatarDataUri = "", theme = "dark") {
   const badgeText = config.avatar?.badgeText || "MINER // ONLINE";
   const usernameUpper = (config.username || "PILOT").toUpperCase();
   const avatarHref = avatarDataUri || config.avatar?.url || `https://avatars.githubusercontent.com/${config.username}?size=400`;
+  const framePulse = isDark ? "#9bd469" : "#5b8d38";
 
   return `
   <!-- Pixel framed player portrait -->
@@ -340,11 +341,28 @@ export function renderAvatarHud(config, avatarDataUri = "", theme = "dark") {
     <rect x="14" y="0" width="488" height="490" fill="${isDark ? '#20261e' : '#d9dec8'}" stroke="${stone}" stroke-width="4"/>
     <rect x="18" y="4" width="480" height="18" fill="${grass}"/>
     <text x="32" y="17" font-family="'Courier New', monospace" font-size="10px" font-weight="bold" fill="#172113">PLAYER SKIN</text>
-    <rect x="74" y="42" width="368" height="290" fill="${isDark ? '#343a31' : '#c2c7b5'}" stroke="${stone}" stroke-width="4"/>
+    <text x="426" y="17" text-anchor="end" font-family="'Courier New', monospace" font-size="8px" font-weight="bold" fill="#172113">SKIN 01</text>
+    <rect x="80" y="50" width="368" height="290" fill="#11160f" opacity="0.18"/>
+    <rect x="74" y="42" width="368" height="290" fill="${isDark ? '#343a31' : '#c2c7b5'}" stroke="${stone}" stroke-width="4">
+      <animate attributeName="stroke" values="${stone};${framePulse};${stone}" dur="5.2s" repeatCount="indefinite"/>
+    </rect>
     <rect x="82" y="50" width="352" height="274" fill="${isDark ? '#252b24' : '#e5e7da'}"/>
-    <image x="94" y="62" width="328" height="250" href="${avatarHref}" xlink:href="${avatarHref}" preserveAspectRatio="xMidYMid slice"/>
+    <image x="86" y="54" width="344" height="266" href="${avatarHref}" xlink:href="${avatarHref}" preserveAspectRatio="xMidYMid slice"/>
+    <!-- Small corner pixels keep the portrait frame crisp without covering the avatar. -->
+    <path d="M82 66V50H98M418 50H434V66M82 308V324H98M418 324H434V308" fill="none" stroke="${isDark ? '#a6d77a' : '#6f914e'}" stroke-width="3" shape-rendering="crispEdges"/>
+    <rect x="86" y="54" width="344" height="4" fill="${isDark ? '#e4f3ce' : '#ffffff'}" opacity="0.12">
+      <animate attributeName="y" values="54;316;54" dur="7s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.04;0.17;0.04" dur="7s" repeatCount="indefinite"/>
+    </rect>
+    <g opacity="0.86">
+      <rect x="90" y="62" width="4" height="4" fill="${framePulse}"><animate attributeName="opacity" values="0.35;1;0.35" dur="2.8s" repeatCount="indefinite"/></rect>
+      <rect x="422" y="310" width="4" height="4" fill="${framePulse}"><animate attributeName="opacity" values="1;0.35;1" dur="2.8s" repeatCount="indefinite"/></rect>
+    </g>
     <rect x="74" y="344" width="368" height="32" fill="${isDark ? '#171b16' : '#eef0e7'}" stroke="${stone}" stroke-width="3"/>
     <rect x="86" y="354" width="12" height="12" fill="${grass}"/>
+    <rect x="86" y="354" width="12" height="12" fill="${isDark ? '#c3eb91' : '#8dbf5c'}" opacity="0">
+      <animate attributeName="opacity" values="0;0.55;0" dur="2.4s" repeatCount="indefinite"/>
+    </rect>
     <text x="108" y="365" font-family="'Courier New', monospace" font-size="12px" font-weight="bold" fill="${isDark ? '#dce8c8' : '#27321f'}">@${escapeXml(usernameUpper)}</text>
     <rect x="74" y="390" width="368" height="30" fill="${isDark ? '#171b16' : '#eef0e7'}" stroke="${stone}" stroke-width="3"/>
     <text x="92" y="410" font-family="'Courier New', monospace" font-size="11px" font-weight="bold" fill="${isDark ? '#a6d77a' : '#4e852f'}">${escapeXml(badgeText)}</text>

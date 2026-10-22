@@ -85,6 +85,9 @@ describe('Minecraft Profile System & Central Config Suite', () => {
       assert.ok(hudSvg.includes('data:image/png;base64,TEST_DATA'));
       assert.ok(hudSvg.includes('PLAYER SKIN'));
       assert.ok(hudSvg.includes('MINER // ONLINE'));
+      assert.ok(hudSvg.includes('dur="7s"'), 'Portrait has a slow, subtle scan pass');
+      assert.ok(hudSvg.includes('dur="5.2s"'), 'Frame highlight breathes gently');
+      assert.ok(hudSvg.includes('preserveAspectRatio="xMidYMid slice"'), 'Avatar remains cleanly cropped inside the frame');
     });
 
     it('should fallback to GitHub avatar URL if data URI is not provided', () => {
