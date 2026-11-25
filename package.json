@@ -1,7 +1,7 @@
 {
   "name": "somyacodes07",
   "version": "1.0.0",
-  "description": "Minecraft themed GitHub profile and live contribution mining heatmap",
+  "description": "GitHub profile sheets styled after somyacodes.in: chip drawing and live contribution grid",
   "type": "module",
   "engines": {
     "node": ">=18"
@@ -15,8 +15,7 @@
     "heatmap",
     "svg",
     "animation",
-    "minecraft",
-    "overworld"
+    "technical-drawing"
   ],
   "author": "somyacodes07",
   "license": "MIT"

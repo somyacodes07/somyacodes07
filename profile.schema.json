@@ -1,77 +1,44 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GitHub Profile Card & Jet Heatmap Configuration",
-  "description": "Single configuration file to customize all details of your GitHub profile README cards and animated jet heatmap.",
+  "title": "Profile sheets configuration",
+  "description": "Content for the drawing-sheet profile card (sheet 01) and contribution sheet (sheet 02).",
   "type": "object",
   "required": ["username", "name"],
   "properties": {
-    "username": {
-      "type": "string",
-      "description": "Your GitHub username (used to fetch live contributions and profile picture)."
-    },
-    "name": {
-      "type": "string",
-      "description": "Your display name / subject name shown on the terminal card."
-    },
-    "commandTitle": {
-      "type": "string",
-      "description": "Shell prompt command shown in the terminal title bar (e.g. somya@codes ~ % ./profile.sh --live)."
-    },
-    "role": {
-      "type": "string",
-      "description": "Your primary title or role (e.g. AI/ML Engineer · Full Stack)."
-    },
-    "education": {
-      "type": "string",
-      "description": "Your education or major (e.g. CSE (AIML))."
-    },
-    "status": {
-      "type": "string",
-      "description": "Your current status or focus (e.g. Building · Learning · Shipping)."
-    },
-    "avatar": {
-      "type": "object",
-      "properties": {
-        "auto": {
-          "type": "boolean",
-          "default": true,
-          "description": "Automatically fetch your GitHub profile picture."
-        },
-        "url": {
-          "type": "string",
-          "description": "Custom avatar image URL (optional, overrides auto fetch if provided)."
-        },
-        "borderGlow": {
-          "type": "string",
-          "description": "Hex color for the avatar HUD glowing border (e.g. #22C55E)."
-        },
-        "badgeText": {
-          "type": "string",
-          "description": "Status badge label under avatar (e.g. PILOT // ONLINE)."
+    "username": { "type": "string", "description": "GitHub username; used for live contributions." },
+    "name": { "type": "string", "description": "Display name, set large on sheet 01." },
+    "partNumber": { "type": "string", "description": "Part number shown above the name and engraved on the chip lid." },
+    "site": { "type": "string", "description": "Portfolio domain shown in the top bar." },
+    "tagline": { "type": "string", "description": "One or two sentences under the name; wraps to three lines max." },
+    "specs": {
+      "type": "array",
+      "description": "Spec table rows under the tagline (max 7).",
+      "items": {
+        "type": "object",
+        "required": ["label", "value"],
+        "properties": {
+          "label": { "type": "string" },
+          "value": { "type": "string" },
+          "live": { "type": "boolean", "description": "Show a blinking status dot." }
         }
       }
     },
-    "skills": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      },
-      "description": "Key-value map of your skills, tech stack, and toolchains."
-    },
-    "contacts": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      },
-      "description": "Key-value map of your contact info, social handles, or portfolio links."
+    "callouts": {
+      "type": "array",
+      "description": "Leader-line labels on the chip drawing. A 'ram' callout with live commit count is added automatically.",
+      "items": {
+        "type": "object",
+        "required": ["part", "text"],
+        "properties": {
+          "part": { "enum": ["lid", "die", "pins", "caps", "bus", "ram"] },
+          "text": { "type": "string", "description": "Text before the first colon is set as the key." }
+        }
+      }
     },
     "heatmap": {
       "type": "object",
       "properties": {
-        "title": {
-          "type": "string",
-          "description": "Footer label for the jet heatmap defense grid."
-        }
+        "title": { "type": "string", "description": "Headline on sheet 02." }
       }
     }
   }

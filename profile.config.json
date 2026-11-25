@@ -1,31 +1,26 @@
 {
   "$schema": "./profile.schema.json",
   "username": "somyacodes07",
-  "name": "Somyajeet",
-  "commandTitle": "somya@overworld ~ % ./profile.sh --live",
-  "role": "AI/ML Engineer · Full Stack",
-  "education": "CSE (AIML)",
-  "status": "Building · Learning · Shipping",
-  "avatar": {
-    "auto": true,
-    "url": "",
-    "borderGlow": "#70C44A",
-    "badgeText": "MINER // ONLINE"
-  },
-  "skills": {
-    "ToolChain": "Hermes / Codex / Claude Code, Docker, Obsidian",
-    "Core.Lang": "Python, Rust, JS, TS, Java, Kotlin",
-    "Core.Frontend": "React, Next.js, Tailwind, Vite",
-    "Core.Backend": "Node.js, FastAPI, Redis",
-    "Core.Database": "PostgreSQL, MongoDB, Supabase",
-    "Core.Infra": "Docker, GitHub Actions, Vercel"
-  },
-  "contacts": {
-    "Portfolio": "somyacodes.in",
-    "LinkedIn": "somyajeetsingh",
-    "GitHub": "somyacodes07"
-  },
+  "name": "Somyajeet Singh",
+  "partNumber": "SS-2029",
+  "site": "somyacodes.in",
+  "tagline": "Full-stack software engineer. I build the database, the API, the interface and the pipeline that ships them.",
+  "specs": [
+    { "label": "status", "value": "open to software engineering internships", "live": true },
+    { "label": "experience", "value": "devops intern, springer capital '26" },
+    { "label": "studying", "value": "b.tech cs (ai & ml), class of '29" },
+    { "label": "based", "value": "navi mumbai, india" },
+    { "label": "stack", "value": "react · next.js · fastapi · node · postgres" },
+    { "label": "find me", "value": "somyacodes.in · in/somyajeetsingh" }
+  ],
+  "callouts": [
+    { "part": "lid", "text": "lid: full-stack engineer" },
+    { "part": "die", "text": "die: cs (ai & ml), '29" },
+    { "part": "pins", "text": "pins: python · rust · ts · java" },
+    { "part": "caps", "text": "caps: claude code · codex · hermes" },
+    { "part": "bus", "text": "bus: docker · actions · vercel" }
+  ],
   "heatmap": {
-    "title": "OVERWORLD // SOMYACODES07"
+    "title": "Every commit, last 52 weeks"
   }
 }
