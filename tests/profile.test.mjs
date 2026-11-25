@@ -4,111 +4,99 @@ import {
   DEFAULT_CONFIG,
   loadProfileConfig,
   escapeXml,
-  buildInfoLines,
-  renderTerminalLines,
-  renderAvatarHud,
+  wrapText,
+  clip,
+  iso,
+  buildCallouts,
+  buildSpecTable,
   buildProfileSvg
 } from '../profile.mjs';
+import { tokensFor, revStamp } from '../sheet.mjs';
 
-describe('Minecraft Profile System & Central Config Suite', () => {
+const t = tokensFor('dark');
+const date = new Date('2026-11-25T00:00:00Z');
 
-  describe('Configuration Loading & Sanitization', () => {
-    it('should fallback gracefully to DEFAULT_CONFIG if file does not exist', () => {
-      const config = loadProfileConfig('nonexistent-config.json');
-      assert.strictEqual(config.username, DEFAULT_CONFIG.username);
-      assert.strictEqual(config.name, DEFAULT_CONFIG.name);
-      assert.ok(typeof config.skills === 'object');
-    });
-
-    it('should correctly escape special XML/SVG characters', () => {
-      const dirty = '<tag> "hello" & \'world\' onload="bad()"';
-      const clean = escapeXml(dirty);
-      assert.strictEqual(clean.includes('<tag>'), false);
-      assert.strictEqual(clean.includes('&lt;tag&gt;'), true);
-      assert.strictEqual(clean.includes('&amp;'), true);
-      assert.strictEqual(clean.includes('onload='), false);
-    });
+describe('profile sheet 01', () => {
+  it('falls back to defaults when the config file is missing', () => {
+    const config = loadProfileConfig('nonexistent-config.json');
+    assert.equal(config.username, DEFAULT_CONFIG.username);
+    assert.ok(Array.isArray(config.specs));
   });
 
-  describe('Dynamic Terminal Lines Builder', () => {
-    it('should map config fields into structured terminal key-value pairs', () => {
-      const customConfig = {
-        username: 'octocat',
-        name: 'Mona Lisa',
-        commandTitle: 'mona@terminal ~ % ./profile.sh',
-        role: 'Chief Mascot',
-        education: 'GitHub University',
-        status: 'Shipping code',
-        skills: {
-          'Languages': 'JavaScript, Ruby',
-          'Database': 'PostgreSQL'
-        },
-        contacts: {
-          'Website': 'github.com'
-        }
-      };
-
-      const lines = buildInfoLines(customConfig);
-      assert.ok(lines.length > 5);
-
-      const subjectLine = lines.find(l => l.key === 'Subject');
-      assert.strictEqual(subjectLine.value, 'Mona Lisa');
-
-      const roleLine = lines.find(l => l.key === 'Role');
-      assert.strictEqual(roleLine.value, 'Chief Mascot');
-
-      const langLine = lines.find(l => l.key === 'Languages');
-      assert.strictEqual(langLine.value, 'JavaScript, Ruby');
-    });
-
-    it('should render clip-paths and animated text elements for dark & light themes', () => {
-      const lines = buildInfoLines(DEFAULT_CONFIG);
-      const darkRender = renderTerminalLines(lines, 'dark');
-      assert.ok(darkRender.clipPaths.includes('<clipPath id="lc0">'));
-      assert.ok(darkRender.textElements.includes('<tspan'));
-      assert.ok(darkRender.cursorElement.includes('cursor-blink'));
-      assert.strictEqual(lines[0].key, 'Subject', 'The inventory starts with profile details, not a duplicate title');
-      assert.ok(darkRender.textElements.includes('y="66"'), 'Body text begins below the inventory title bar');
-      const toolChain = darkRender.textElements.match(/<tspan class="key">ToolChain<\/tspan>.*?<tspan class="value"[^>]*>Hermes \/ Codex \/ Claude Code, Docker, Obsidian<\/tspan>/);
-      assert.ok(toolChain, 'Long skill values use a fitted font size and remain in the card');
-
-      const lightRender = renderTerminalLines(lines, 'light');
-      assert.ok(lightRender.clipPaths.includes('<clipPath id="lc0">'));
-      assert.ok(lightRender.textElements.includes('fill="#22291e"'));
-    });
+  it('loads the repo config with specs and callouts', () => {
+    const config = loadProfileConfig('profile.config.json');
+    assert.equal(config.name, 'Somyajeet Singh');
+    assert.ok(config.specs.some(s => s.live));
+    assert.ok(config.callouts.every(c => c.part && c.text));
   });
 
-  describe('Pixel Frame & Profile SVG Rendering', () => {
-    it('should generate a block-built player frame with custom badges and image target', () => {
-      const hudSvg = renderAvatarHud(DEFAULT_CONFIG, 'data:image/png;base64,TEST_DATA', 'dark');
-      assert.ok(hudSvg.includes('<image'));
-      assert.ok(hudSvg.includes('data:image/png;base64,TEST_DATA'));
-      assert.ok(hudSvg.includes('PLAYER SKIN'));
-      assert.ok(hudSvg.includes('MINER // ONLINE'));
-      assert.ok(hudSvg.includes('dur="7s"'), 'Portrait has a slow, subtle scan pass');
-      assert.ok(hudSvg.includes('dur="5.2s"'), 'Frame highlight breathes gently');
-      assert.ok(hudSvg.includes('preserveAspectRatio="xMidYMid slice"'), 'Avatar remains cleanly cropped inside the frame');
-    });
-
-    it('should fallback to GitHub avatar URL if data URI is not provided', () => {
-      const hudSvg = renderAvatarHud(DEFAULT_CONFIG, '', 'dark');
-      assert.ok(hudSvg.includes('github.com') || hudSvg.includes('avatars.githubusercontent.com'));
-    });
-
-    it('should compile valid dark and light SVGs with correct dimensions and theme tokens', () => {
-      const darkSvg = buildProfileSvg(DEFAULT_CONFIG, { theme: 'dark' });
-      assert.ok(darkSvg.startsWith('<svg'));
-      assert.ok(darkSvg.endsWith('</svg>'));
-      assert.ok(darkSvg.includes('width="1180"'));
-      assert.ok(darkSvg.includes('height="586"'));
-      assert.ok(darkSvg.includes('#171b16'));
-      assert.ok(darkSvg.includes('PLAYER INVENTORY'));
-
-      const lightSvg = buildProfileSvg(DEFAULT_CONFIG, { theme: 'light' });
-      assert.ok(lightSvg.startsWith('<svg'));
-      assert.ok(lightSvg.endsWith('</svg>'));
-      assert.ok(lightSvg.includes('#e7eadf') || lightSvg.includes('#d9dec8'));
-    });
+  it('escapes XML and disarms inline handlers', () => {
+    const clean = escapeXml('<tag> "hi" & \'x\' onload="bad()"');
+    assert.ok(!clean.includes('<tag>'));
+    assert.ok(clean.includes('&lt;tag&gt;'));
+    assert.ok(!clean.includes('onload='));
   });
 
+  it('wraps and clips text to character budgets', () => {
+    const lines = wrapText('one two three four five six seven', 10);
+    assert.ok(lines.every(l => l.length <= 10));
+    assert.equal(lines.join(' '), 'one two three four five six seven');
+    assert.equal(clip('abcdefgh', 5), 'abcd…');
+    assert.equal(clip('abc', 5), 'abc');
+  });
+
+  it('projects isometric points: +x goes right-down, +z goes up', () => {
+    const [x0, y0] = iso(0, 0, 0);
+    const [x1, y1] = iso(10, 0, 0);
+    const [, yz] = iso(0, 0, 10);
+    assert.ok(x1 > x0 && y1 > y0);
+    assert.ok(yz < y0);
+  });
+
+  it('renders one leader per known callout and skips unknown parts', () => {
+    const svg = buildCallouts(t, [
+      { part: 'lid', text: 'lid: a' },
+      { part: 'die', text: 'die: b' },
+      { part: 'nope', text: 'x: c' }
+    ]);
+    assert.equal((svg.match(/class="pen"/g) || []).length, 2);
+    assert.ok(!svg.includes('x: c'));
+  });
+
+  it('keeps leader lines from crossing', () => {
+    const svg = buildCallouts(t, DEFAULT_CONFIG.callouts.concat({ part: 'ram', text: 'ram: 1 commits' }));
+    const segs = [...svg.matchAll(/H([\d.]+)L([\d.]+) ([\d.]+)"/g)].map((m, i) => ({ y: i, ex: +m[1], ax: +m[2], ay: +m[3] }));
+    // shared elbow column, anchor angles ascending with label order
+    assert.equal(new Set(segs.map(s => s.ex)).size, 1);
+    const angles = segs.map(s => Math.atan2(s.ay, s.ex - s.ax));
+    for (let i = 1; i < angles.length; i++) assert.ok(angles[i] >= angles[i - 1] - 0.2);
+  });
+
+  it('marks live spec rows with a status dot', () => {
+    const svg = buildSpecTable(t, [{ label: 'status', value: 'open', live: true }, { label: 'based', value: 'x' }]);
+    assert.equal((svg.match(/<circle/g) || []).length, 1);
+    assert.ok(svg.includes(t.live));
+  });
+
+  it('builds dark and light sheets with embedded fonts and no remote resources', () => {
+    for (const theme of ['dark', 'light']) {
+      const svg = buildProfileSvg(DEFAULT_CONFIG, { theme, commits: 652, date });
+      const tk = tokensFor(theme);
+      assert.ok(svg.startsWith('<svg') && svg.endsWith('</svg>'));
+      assert.ok(svg.includes('viewBox="0 0 1180 586"'));
+      assert.ok(svg.includes(`fill="${tk.bg}"`));
+      assert.ok(svg.includes("font-family:'Archivo'"));
+      assert.ok(svg.includes('data:font/woff2;base64,'));
+      assert.ok(svg.includes('ram:</tspan> 652 commits in 52 weeks'));
+      assert.ok(svg.includes(`rev ${revStamp(date)}`));
+      assert.ok(!/(?:href|src)=["']https?:/.test(svg), 'no external fetches');
+      assert.ok(svg.length < 120000, `size ${svg.length}`);
+    }
+  });
+
+  it('escapes hostile config values', () => {
+    const svg = buildProfileSvg({ ...DEFAULT_CONFIG, name: '<script>x</script>', specs: [{ label: 'a', value: '<img onerror=1>' }] }, { date });
+    assert.ok(!svg.includes('<script>'));
+    assert.ok(!svg.includes('<img'));
+  });
 });

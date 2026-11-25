@@ -1,58 +1,50 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import https from 'node:https';
-import http from 'node:http';
-import { URL } from 'node:url';
+import fs from "node:fs";
+import path from "node:path";
+import { tokensFor, baseStyle, sheetFrame, titleBlock, revStamp, MONO_ADVANCE } from "./sheet.mjs";
 
 /**
- * Default fallback configuration
+ * Profile card: sheet 01. A hidden-line drawing of the chip, as on somyacodes.in.
  */
+
+export const WIDTH = 1180;
+export const HEIGHT = 586;
+
 export const DEFAULT_CONFIG = {
   username: "somyacodes07",
-  name: "Somyajeet",
-  commandTitle: "somya@overworld ~ % ./profile.sh --live",
-  role: "AI/ML Engineer · Full Stack",
-  education: "CSE (AIML)",
-  status: "Building · Learning · Shipping",
-  avatar: {
-    auto: true,
-    url: "",
-    borderGlow: "#70C44A",
-    badgeText: "MINER // ONLINE"
-  },
-  skills: {
-    "ToolChain": "Hermes / Codex / Claude Code, Docker, Obsidian",
-    "Core.Lang": "Python, Rust, JS, TS, Java, Kotlin",
-    "Core.Frontend": "React, Next.js, Tailwind, Vite",
-    "Core.Backend": "Node.js, FastAPI, Redis",
-    "Core.Database": "PostgreSQL, MongoDB, Supabase",
-    "Core.Infra": "Docker, GitHub Actions, Vercel"
-  },
-  contacts: {
-    "Portfolio": "github.com/somyacodes07",
-    "LinkedIn": "somyajeetsingh",
-    "GitHub": "somyacodes07"
-  },
+  name: "Somyajeet Singh",
+  partNumber: "SS-2029",
+  site: "somyacodes.in",
+  tagline: "Full-stack software engineer. I build the database, the API, the interface and the pipeline that ships them.",
+  specs: [
+    { label: "status", value: "open to software engineering internships", live: true },
+    { label: "experience", value: "devops intern, springer capital '26" },
+    { label: "studying", value: "b.tech cs (ai & ml), class of '29" },
+    { label: "based", value: "navi mumbai, india" },
+    { label: "stack", value: "react · next.js · fastapi · node · postgres" },
+    { label: "find me", value: "somyacodes.in · in/somyajeetsingh" }
+  ],
+  callouts: [
+    { part: "lid", text: "lid: full-stack engineer" },
+    { part: "die", text: "die: cs (ai & ml), '29" },
+    { part: "pins", text: "pins: python · rust · ts · java" },
+    { part: "caps", text: "caps: claude code · codex · hermes" },
+    { part: "bus", text: "bus: docker · actions · vercel" }
+  ],
   heatmap: {
-    "title": "OVERWORLD // SOMYACODES07"
+    title: "Every commit, last 52 weeks"
   }
 };
 
-/**
- * Loads configuration from profile.config.json or returns default
- */
 export function loadProfileConfig(configPath = "profile.config.json") {
   try {
-    const resolvedPath = path.resolve(configPath);
-    if (fs.existsSync(resolvedPath)) {
-      const raw = fs.readFileSync(resolvedPath, "utf8");
-      const parsed = JSON.parse(raw);
+    const resolved = path.resolve(configPath);
+    if (fs.existsSync(resolved)) {
+      const parsed = JSON.parse(fs.readFileSync(resolved, "utf8"));
       return {
         ...DEFAULT_CONFIG,
         ...parsed,
-        avatar: { ...DEFAULT_CONFIG.avatar, ...(parsed.avatar || {}) },
-        skills: parsed.skills ? { ...parsed.skills } : { ...DEFAULT_CONFIG.skills },
-        contacts: parsed.contacts ? { ...parsed.contacts } : { ...DEFAULT_CONFIG.contacts },
+        specs: Array.isArray(parsed.specs) ? parsed.specs : DEFAULT_CONFIG.specs,
+        callouts: Array.isArray(parsed.callouts) ? parsed.callouts : DEFAULT_CONFIG.callouts,
         heatmap: { ...DEFAULT_CONFIG.heatmap, ...(parsed.heatmap || {}) }
       };
     }
@@ -62,9 +54,6 @@ export function loadProfileConfig(configPath = "profile.config.json") {
   return { ...DEFAULT_CONFIG };
 }
 
-/**
- * Escapes XML/SVG special characters
- */
 export function escapeXml(str) {
   if (str === null || str === undefined) return "";
   return String(str)
@@ -76,365 +65,276 @@ export function escapeXml(str) {
     .replace(/'/g, "&apos;");
 }
 
-/**
- * Fetches user avatar as Base64 Data URI with redirect handling and multi-tier fallbacks
- */
-export async function fetchAvatarDataUri(username, customUrl = "") {
-  const targetUrl = customUrl || (username ? `https://github.com/${username}.png` : "");
-  if (!targetUrl) return "";
-
-  // 1. Try global fetch (Node 18+, GitHub Actions)
-  if (typeof fetch === "function") {
-    try {
-      const res = await fetch(targetUrl, {
-        headers: { "User-Agent": "github-profile-card-generator" },
-        signal: AbortSignal.timeout(4000)
-      });
-      if (res.ok) {
-        const arrayBuf = await res.arrayBuffer();
-        const buf = Buffer.from(arrayBuf);
-        const mime = res.headers.get("content-type") || "image/png";
-        return `data:${mime};base64,${buf.toString("base64")}`;
-      }
-    } catch (e) {
-      // Continue to next fallback
-    }
-  }
-
-  // 2. Try curl CLI (Built-in on Windows, macOS, Linux)
-  try {
-    const curlBin = process.platform === "win32" ? "curl.exe" : "curl";
-    const buf = execFileSync(curlBin, ["-sL", targetUrl], {
-      timeout: 5000,
-      maxBuffer: 15 * 1024 * 1024
-    });
-    if (buf && buf.length > 100) {
-      return `data:image/png;base64,${buf.toString("base64")}`;
-    }
-  } catch (e) {
-    // Continue to node:https fallback
-  }
-
-  // 3. Fallback using node:https
-  return new Promise((resolve) => {
-    function fetchUrl(currentUrl, redirects = 0) {
-      if (redirects > 5) return resolve("");
-      try {
-        const parsed = new URL(currentUrl);
-        const transport = parsed.protocol === "https:" ? https : http;
-        const req = transport.get(
-          currentUrl,
-          {
-            headers: { "User-Agent": "Mozilla/5.0" },
-            timeout: 4000,
-            family: 4
-          },
-          (res) => {
-            if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-              res.resume();
-              const nextUrl = new URL(res.headers.location, currentUrl).toString();
-              return fetchUrl(nextUrl, redirects + 1);
-            }
-            if (res.statusCode !== 200) {
-              res.resume();
-              return resolve("");
-            }
-            const chunks = [];
-            res.on("data", (c) => chunks.push(c));
-            res.on("end", () => {
-              const buf = Buffer.concat(chunks);
-              const mime = res.headers["content-type"] || "image/png";
-              resolve(`data:${mime};base64,${buf.toString("base64")}`);
-            });
-            res.on("error", () => resolve(""));
-          }
-        );
-        req.on("timeout", () => {
-          req.destroy();
-          resolve("");
-        });
-        req.on("error", () => resolve(""));
-      } catch (err) {
-        resolve("");
-      }
-    }
-    fetchUrl(targetUrl);
-  });
-}
-
-/**
- * Helper to produce perfectly aligned 28-character monospace prefixes
- */
-export function makeDots(key) {
-  const numDots = Math.max(1, 23 - key.length);
-  return ": " + ".".repeat(numDots) + " ";
-}
-
-/**
- * Builds formatted dotted lines for terminal system info
- */
-export function buildInfoLines(config) {
+/** Greedy word wrap by character budget. */
+export function wrapText(text, maxChars) {
+  const words = String(text || "").split(/\s+/).filter(Boolean);
   const lines = [];
-
-  // The command prompt is already shown in the card titlebar.
-  // Subject / Name
-  lines.push({
-    type: "kv",
-    key: "Subject",
-    dots: makeDots("Subject"),
-    value: config.name || config.username
-  });
-
-  // Line 2: Role
-  if (config.role) {
-    lines.push({
-      type: "kv",
-      key: "Role",
-      dots: makeDots("Role"),
-      value: config.role
-    });
-  }
-
-  // Divider
-  lines.push({ type: "empty" });
-
-  // Education
-  if (config.education) {
-    lines.push({
-      type: "kv",
-      key: "Education",
-      dots: makeDots("Education"),
-      value: config.education
-    });
-  }
-
-  // Status
-  if (config.status) {
-    lines.push({
-      type: "kv",
-      key: "Status",
-      dots: makeDots("Status"),
-      value: config.status
-    });
-  }
-
-  // Skills
-  if (config.skills && typeof config.skills === "object") {
-    for (const [k, v] of Object.entries(config.skills)) {
-      lines.push({
-        type: "kv",
-        key: k,
-        dots: makeDots(k),
-        value: String(v)
-      });
+  let line = "";
+  for (const w of words) {
+    if (line && (line + " " + w).length > maxChars) {
+      lines.push(line);
+      line = w;
+    } else {
+      line = line ? line + " " + w : w;
     }
   }
-
-  // Divider
-  lines.push({ type: "empty" });
-
-  // Contact Header
-  lines.push({
-    type: "section",
-    accent: "- Tools & Links",
-    sep: " -————————————————————————————————————————————-—-"
-  });
-
-  lines.push({ type: "empty" });
-
-  // Contacts
-  if (config.contacts && typeof config.contacts === "object") {
-    for (const [k, v] of Object.entries(config.contacts)) {
-      lines.push({
-        type: "kv",
-        key: k,
-        dots: makeDots(k),
-        value: String(v)
-      });
-    }
-  }
-
-  // Divider
-  lines.push({ type: "empty" });
-
-  // Live Stats Header
-  lines.push({
-    type: "section",
-    accent: "- Contribution World",
-    sep: " -————————————————————————————————————————————-—-"
-  });
-
-  lines.push({
-    type: "note",
-    value: "Watch Steve mine this GitHub contribution world below ↓"
-  });
-
+  if (line) lines.push(line);
   return lines;
 }
 
-/**
- * Builds SVG clip-paths and animated text elements for terminal lines
- */
-export function renderTerminalLines(lines, theme = "dark") {
-  const lineYStart = 66;
-  const lineStep = 20;
-  let clipPaths = "";
-  let textElements = "";
-
-  const isDark = theme === "dark";
-  const textColor = isDark ? "#e3e8d6" : "#22291e";
-  const keyColor = isDark ? "#9bd469" : "#4e852f";
-  const valColor = isDark ? "#f2f0df" : "#292e25";
-  const ccColor = isDark ? "#596451" : "#b2b99f";
-  const headColor = isDark ? "#b8e385" : "#557d34";
-  const accentColor = isDark ? "#e0b76b" : "#88612f";
-  const noteColor = isDark ? "#a4ae97" : "#67715d";
-
-  lines.forEach((line, i) => {
-    const clipId = `lc${i}`;
-    const yPos = lineYStart + i * lineStep;
-    const animDelay = (0.75 + i * 0.11).toFixed(2);
-
-    clipPaths += `  <clipPath id="${clipId}"><rect x="500" y="${(yPos - 16).toFixed(2)}" width="0" height="22"><animate attributeName="width" from="0" to="644" dur="0.38s" begin="${animDelay}s" fill="freeze"/></rect></clipPath>\n`;
-
-    let lineInner = "";
-    const valueFontSize = line.type === "kv"
-      ? Math.min(13.5, Math.max(10.5, ((628 - (2 + line.key.length + line.dots.length) * 8.1) / Math.max(1, line.value.length)) * 1.8))
-      : 13.5;
-    if (line.type === "header") {
-      lineInner = `<tspan x="520" y="${yPos}" class="head" fill="${headColor}">${escapeXml(line.head)}</tspan><tspan class="cc" fill="${ccColor}">${escapeXml(line.sep)}</tspan>`;
-    } else if (line.type === "kv") {
-      lineInner = `<tspan x="520" y="${yPos}" class="cc">. </tspan><tspan class="key">${escapeXml(line.key)}</tspan><tspan class="cc">${escapeXml(line.dots)}</tspan><tspan class="value" font-size="${valueFontSize.toFixed(1)}px" fill="${valColor}">${escapeXml(line.value)}</tspan>`;
-    } else if (line.type === "section") {
-      lineInner = `<tspan x="520" y="${yPos}" class="accent" fill="${accentColor}">${escapeXml(line.accent)}</tspan><tspan class="cc" fill="${ccColor}">${escapeXml(line.sep)}</tspan>`;
-    } else if (line.type === "note") {
-      lineInner = `<tspan x="520" y="${yPos}" class="cc" fill="${ccColor}">. </tspan><tspan class="value" fill="${noteColor}">${escapeXml(line.value)}</tspan>`;
-    } else {
-      lineInner = `<tspan x="520" y="${yPos}" class="cc" fill="${ccColor}">. </tspan>`;
-    }
-
-    textElements += `  <g clip-path="url(#${clipId})"><text x="520" y="0" fill="${textColor}">${lineInner}</text></g>\n`;
-  });
-
-  const lastLineY = lineYStart + (lines.length - 1) * lineStep;
-  const cursorDelay = (0.75 + lines.length * 0.11 + 0.1).toFixed(2);
-  const cursorElement = `  <rect x="522" y="${lastLineY - 14}" width="9" height="16" class="cursor-blink" opacity="0" fill="${isDark ? '#22C55E' : '#059669'}">\n    <animate attributeName="opacity" values="0;0;1;0;1;0;1;0" keyTimes="0;0.01;0.02;0.3;0.5;0.7;0.85;1" dur="1.4s" begin="${cursorDelay}s" repeatCount="indefinite"/>\n  </rect>\n`;
-
-  return { clipPaths, textElements, cursorElement };
+/** Shorten to a character budget with an ellipsis. */
+export function clip(text, maxChars) {
+  const s = String(text ?? "");
+  return s.length > maxChars ? s.slice(0, Math.max(0, maxChars - 1)) + "…" : s;
 }
 
-/**
- * Renders the profile portrait in a block-built Overworld frame
- */
-export function renderAvatarHud(config, avatarDataUri = "", theme = "dark") {
-  const isDark = theme === "dark";
-  const grass = config.avatar?.borderGlow || (isDark ? "#70C44A" : "#4e852f");
-  const stone = isDark ? "#8b9182" : "#68705e";
-  const badgeText = config.avatar?.badgeText || "MINER // ONLINE";
-  const usernameUpper = (config.username || "PILOT").toUpperCase();
-  const avatarHref = avatarDataUri || config.avatar?.url || `https://avatars.githubusercontent.com/${config.username}?size=400`;
-  const framePulse = isDark ? "#9bd469" : "#5b8d38";
+// ---------- isometric chip ----------
 
-  return `
-  <!-- Pixel framed player portrait -->
-  <g transform="translate(0, 18)">
-    <rect x="14" y="0" width="488" height="490" fill="${isDark ? '#20261e' : '#d9dec8'}" stroke="${stone}" stroke-width="4"/>
-    <rect x="18" y="4" width="480" height="18" fill="${grass}"/>
-    <text x="32" y="17" font-family="'Courier New', monospace" font-size="10px" font-weight="bold" fill="#172113">PLAYER SKIN</text>
-    <text x="426" y="17" text-anchor="end" font-family="'Courier New', monospace" font-size="8px" font-weight="bold" fill="#172113">SKIN 01</text>
-    <rect x="80" y="50" width="368" height="290" fill="#11160f" opacity="0.18"/>
-    <rect x="74" y="42" width="368" height="290" fill="${isDark ? '#343a31' : '#c2c7b5'}" stroke="${stone}" stroke-width="4">
-      <animate attributeName="stroke" values="${stone};${framePulse};${stone}" dur="5.2s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="82" y="50" width="352" height="274" fill="${isDark ? '#252b24' : '#e5e7da'}"/>
-    <image x="86" y="54" width="344" height="266" href="${avatarHref}" xlink:href="${avatarHref}" preserveAspectRatio="xMidYMid slice"/>
-    <!-- Small corner pixels keep the portrait frame crisp without covering the avatar. -->
-    <path d="M82 66V50H98M418 50H434V66M82 308V324H98M418 324H434V308" fill="none" stroke="${isDark ? '#a6d77a' : '#6f914e'}" stroke-width="3" shape-rendering="crispEdges"/>
-    <rect x="86" y="54" width="344" height="4" fill="${isDark ? '#e4f3ce' : '#ffffff'}" opacity="0.12">
-      <animate attributeName="y" values="54;316;54" dur="7s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0.04;0.17;0.04" dur="7s" repeatCount="indefinite"/>
-    </rect>
-    <g opacity="0.86">
-      <rect x="90" y="62" width="4" height="4" fill="${framePulse}"><animate attributeName="opacity" values="0.35;1;0.35" dur="2.8s" repeatCount="indefinite"/></rect>
-      <rect x="422" y="310" width="4" height="4" fill="${framePulse}"><animate attributeName="opacity" values="1;0.35;1" dur="2.8s" repeatCount="indefinite"/></rect>
-    </g>
-    <rect x="74" y="344" width="368" height="32" fill="${isDark ? '#171b16' : '#eef0e7'}" stroke="${stone}" stroke-width="3"/>
-    <rect x="86" y="354" width="12" height="12" fill="${grass}"/>
-    <rect x="86" y="354" width="12" height="12" fill="${isDark ? '#c3eb91' : '#8dbf5c'}" opacity="0">
-      <animate attributeName="opacity" values="0;0.55;0" dur="2.4s" repeatCount="indefinite"/>
-    </rect>
-    <text x="108" y="365" font-family="'Courier New', monospace" font-size="12px" font-weight="bold" fill="${isDark ? '#dce8c8' : '#27321f'}">@${escapeXml(usernameUpper)}</text>
-    <rect x="74" y="390" width="368" height="30" fill="${isDark ? '#171b16' : '#eef0e7'}" stroke="${stone}" stroke-width="3"/>
-    <text x="92" y="410" font-family="'Courier New', monospace" font-size="11px" font-weight="bold" fill="${isDark ? '#a6d77a' : '#4e852f'}">${escapeXml(badgeText)}</text>
-    <g transform="translate(198 444)">
-      <rect x="0" y="0" width="26" height="26" fill="${isDark ? '#383e35' : '#c9cebb'}" stroke="${stone}" stroke-width="3"/>
-      <path d="M5 19L19 5M14 5h6v6" stroke="${isDark ? '#cf9a55' : '#946532'}" stroke-width="4" stroke-linecap="square"/>
-      <rect x="36" y="0" width="26" height="26" fill="${isDark ? '#383e35' : '#c9cebb'}" stroke="${stone}" stroke-width="3"/>
-      <path d="M41 18l5-10 5 7 4-5 4 8z" fill="${grass}"/>
-      <rect x="72" y="0" width="26" height="26" fill="${isDark ? '#383e35' : '#c9cebb'}" stroke="${stone}" stroke-width="3"/>
-      <path d="M77 8h16M77 14h16M77 20h16" stroke="${isDark ? '#d7d2bb' : '#747968'}" stroke-width="3"/>
-    </g>
+const ISO = { ox: 752, oy: 156, s: 1.36 };
+const COS30 = Math.cos(Math.PI / 6);
+
+export function iso(x, y, z = 0) {
+  return [ISO.ox + (x - y) * COS30 * ISO.s, ISO.oy + (x + y) * 0.5 * ISO.s - z * ISO.s];
+}
+
+const pt = ([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`;
+const poly = (pts) => pts.map(p => pt(iso(...p))).join(" ");
+
+class Pen {
+  constructor(t) {
+    this.t = t;
+    this.parts = [];
+    this.i = 0;
+    this.start = 0.25;
+    this.step = 0.014;
+  }
+  delay() {
+    return (this.start + this.i++ * this.step).toFixed(3);
+  }
+  face(pts, stroke, fill) {
+    this.parts.push(`<polygon points="${poly(pts)}" fill="${fill ?? this.t.bg}" stroke="${stroke}" stroke-width="1" stroke-linejoin="round" pathLength="1" class="pen" style="animation-delay:${this.delay()}s"/>`);
+  }
+  box(x, y, z, w, d, h, stroke = this.t.ink2) {
+    const x1 = x + w, y1 = y + d, zt = z + h;
+    this.face([[x, y1, zt], [x1, y1, zt], [x1, y1, z], [x, y1, z]], stroke);
+    this.face([[x1, y, zt], [x1, y1, zt], [x1, y1, z], [x1, y, z]], stroke);
+    this.face([[x, y, zt], [x1, y, zt], [x1, y1, zt], [x, y1, zt]], stroke);
+  }
+  path(d, stroke, extra = "") {
+    this.parts.push(`<path d="${d}" fill="none" stroke="${stroke}" stroke-width="1" pathLength="1" class="pen" style="animation-delay:${this.delay()}s" ${extra}/>`);
+  }
+  raw(svg) {
+    this.parts.push(svg);
+  }
+}
+
+const seg = (a, b) => `M${pt(iso(...a))}L${pt(iso(...b))}`;
+
+/** 3-D anchor point for each callout part. */
+export const CALLOUT_ANCHORS = {
+  ram: [96, 30, 16],
+  lid: [132, 96, 47],
+  die: [120, 104, 12],
+  pins: [137, 128, 9],
+  caps: [156, 80, 13],
+  bus: [194, 116, 4]
+};
+
+export function buildChip(t, partNumber = "SS-2029") {
+  const pen = new Pen(t);
+  const Z = 4; // board top
+
+  // board
+  pen.box(0, 0, 0, 200, 200, Z, t.ink2);
+
+  // copper traces on the board top
+  const traces = [];
+  for (let k = 0; k < 9; k++) {
+    const y = 68 + k * 8;
+    const jog = 152 + (k % 3) * 8;
+    traces.push(`${seg([140, y, Z], [jog, y, Z])}L${pt(iso(jog + 8, y + (k < 4 ? -8 : 8), Z))}L${pt(iso(194, y + (k < 4 ? -8 : 8), Z))}`);
+  }
+  for (let k = 0; k < 9; k++) {
+    const x = 68 + k * 8;
+    traces.push(seg([x, 140, Z], [x, 194, Z]));
+  }
+  for (let k = 0; k < 6; k++) {
+    const y = 72 + k * 11;
+    traces.push(seg([60, y, Z], [42, y, Z]));
+    const x = 70 + k * 11;
+    traces.push(seg([x, 60, Z], [x, 46, Z]));
+  }
+  pen.path(traces.join(""), t.line2);
+
+  // live signal pulses along a few traces (start once the drawing settles)
+  const pulses = [0, 3, 7, 10, 14, 16].map((n, i) =>
+    `<path d="${traces[n]}" fill="none" stroke="${t.red}" stroke-width="1.6" stroke-linecap="round" pathLength="1" stroke-dasharray=".12 .88" style="animation:pulse 2.6s linear ${(2.4 + i * 0.37).toFixed(2)}s infinite;opacity:0"/>`
+  );
+
+  // behind the package: RAM sticks, VRM bank, back caps
+  for (let i = 0; i < 4; i++) pen.box(14, 6 + i * 8, Z, 96, 3, 12, t.ink2);
+  for (let i = 0; i < 5; i++) pen.box(22, 66 + i * 15, Z, 11, 11, 7, t.ink2);
+  pen.box(66, 48, Z, 6, 6, 8, t.ink3);
+  pen.box(120, 48, Z, 6, 6, 8, t.ink3);
+
+  // package substrate
+  pen.box(60, 60, Z, 80, 80, 5, t.ink);
+  const S = Z + 5;
+  const pads = [];
+  for (let k = 0; k < 12; k++) {
+    const a = 64 + k * 6;
+    pads.push(`M${poly([[a, 134, S], [a + 3, 134, S], [a + 3, 137, S], [a, 137, S]])}Z`);
+    pads.push(`M${poly([[134, a, S], [137, a, S], [137, a + 3, S], [134, a + 3, S]])}Z`);
+  }
+  pen.path(pads.join(""), t.line2);
+
+  // die
+  pen.box(80, 80, S, 40, 40, 3, t.ink);
+  const D = S + 3;
+  const dieLines = [];
+  for (let k = 1; k < 5; k++) {
+    dieLines.push(seg([80 + k * 8, 80, D], [80 + k * 8, 120, D]));
+    dieLines.push(seg([80, 80 + k * 8, D], [120, 80 + k * 8, D]));
+  }
+  pen.path(dieLines.join(""), t.line2);
+
+  // caps in front
+  for (const [x, y] of [[148, 62], [148, 76], [64, 148], [78, 148], [148, 122]]) pen.box(x, y, Z, 7, 7, 9, t.ink2);
+
+  // exploded lid with guide lines down to the substrate
+  const L = 42;
+  const guides = [[68, 68], [132, 68], [132, 132], [68, 132]].map(([x, y]) => seg([x, y, L], [x, y, S])).join("");
+  pen.raw(`<path d="${guides}" fill="none" stroke="${t.line2}" stroke-dasharray="3 4" class="rise" style="animation-delay:1.5s"/>`);
+  pen.box(68, 68, L, 64, 64, 5, t.ink);
+
+  // part number engraved on the lid top
+  const top = L + 5;
+  const [lx, ly] = iso(100, 100, top);
+  const k = ISO.s * 0.9;
+  const m = [COS30 * k, 0.5 * k, -COS30 * k, 0.5 * k].map(v => v.toFixed(4)).join(",");
+  const pin1 = iso(74, 74, top);
+  pen.raw(`<g class="rise" style="animation-delay:1.7s"><text transform="matrix(${m},${lx.toFixed(1)},${ly.toFixed(1)})" text-anchor="middle" dy="4" class="mono i2" font-size="11" letter-spacing=".12em">${escapeXml(clip(partNumber, 10))}</text><circle cx="${pin1[0].toFixed(1)}" cy="${pin1[1].toFixed(1)}" r="2" fill="${t.red}"/></g>`);
+
+  return { svg: pen.parts.join("\n"), pulses: pulses.join("\n") };
+}
+
+/** Leader-line callouts, right-aligned like the portfolio hero. */
+export function buildCallouts(t, callouts, { right = WIDTH - 40, top = 104, gap = 44 } = {}) {
+  const items = callouts
+    .filter(c => c && CALLOUT_ANCHORS[c.part] && c.text)
+    .slice(0, 7)
+    .map(c => {
+      const text = clip(c.text, 34);
+      return { ...c, text, w: text.length * 12 * MONO_ADVANCE, at: iso(...CALLOUT_ANCHORS[c.part]) };
+    });
+  if (!items.length) return "";
+
+  // Every underline stops at one shared column; ordering anchors by angle from it keeps leaders from crossing.
+  const elbowX = right - Math.max(...items.map(c => c.w)) - 10;
+  const midY = top + ((items.length - 1) * gap) / 2;
+  items.sort((a, b) => Math.atan2(a.at[1] - midY, elbowX - a.at[0]) - Math.atan2(b.at[1] - midY, elbowX - b.at[0]));
+
+  return items.map((c, i) => {
+    const y = top + i * gap;
+    const x0 = right - c.w;
+    const [ax, ay] = c.at;
+    const colon = c.text.indexOf(":");
+    const key = colon > 0 ? c.text.slice(0, colon + 1) : "";
+    const rest = colon > 0 ? c.text.slice(colon + 1) : c.text;
+    const delay = (1.8 + i * 0.12).toFixed(2);
+    const live = c.part === "ram";
+    return `<g>
+  <path d="M${right} ${y + 7}H${elbowX.toFixed(1)}L${ax.toFixed(1)} ${ay.toFixed(1)}" fill="none" stroke="${t.line2}" pathLength="1" class="pen" style="animation-delay:${delay}s"/>
+  <g class="rise" style="animation-delay:${delay}s">
+    <rect x="${(x0 - 4).toFixed(1)}" y="${y - 11}" width="${(c.w + 6).toFixed(1)}" height="16" fill="${t.bg}"/>
+    <text x="${right}" y="${y}" text-anchor="end" class="mono i2" font-size="12"><tspan class="${live ? "red" : "mono"}">${escapeXml(key)}</tspan>${escapeXml(rest)}</text>
+    <circle cx="${ax.toFixed(1)}" cy="${ay.toFixed(1)}" r="2.6" fill="${t.bg}" stroke="${live ? t.red : t.ink}" stroke-width="1.2"${live ? ' style="animation:blink 1.6s ease-in-out 2.5s infinite"' : ""}/>
   </g>
-`;
+</g>`;
+  }).join("\n");
 }
 
-/**
- * Builds the complete profile card SVG (Dark or Light)
- */
+export function buildSpecTable(t, specs, { x = 56, y = 300, w = 470, row = 34, labelW = 118 } = {}) {
+  const rows = (specs || []).slice(0, 7);
+  let out = "";
+  rows.forEach((s, i) => {
+    const ry = y + i * row;
+    const delay = (0.9 + i * 0.08).toFixed(2);
+    const valueX = x + labelW + (s.live ? 14 : 0);
+    out += `<g class="rise" style="animation-delay:${delay}s">
+  <path d="M${x} ${ry}h${w}" stroke="${t.line2}"/>
+  <text x="${x}" y="${ry + 22}" class="mono i3" font-size="12">${escapeXml(clip(s.label, 14))}</text>
+  ${s.live ? `<circle cx="${x + labelW + 4}" cy="${ry + 18}" r="3.5" fill="${t.live}" style="animation:blink 2.4s ease-in-out 2s infinite"/>` : ""}
+  <text x="${valueX}" y="${ry + 22}" class="mono" font-size="12.5">${escapeXml(clip(s.value, s.live ? 44 : 46))}</text>
+</g>\n`;
+  });
+  if (rows.length) out += `<path class="rise" style="animation-delay:1.4s" d="M${x} ${y + rows.length * row}h${w}" stroke="${t.line2}"/>`;
+  return out;
+}
+
 export function buildProfileSvg(config = DEFAULT_CONFIG, options = {}) {
-  const theme = options.theme || "dark";
-  const avatarDataUri = options.avatarDataUri || "";
-  const isDark = theme === "dark";
+  const theme = options.theme === "light" ? "light" : "dark";
+  const t = tokensFor(theme);
+  const date = options.date || new Date();
+  const rev = revStamp(date);
+  const part = escapeXml(config.partNumber || "SS-2029");
+  const name = escapeXml(clip(config.name || config.username, 24));
+  const site = escapeXml(config.site || "");
+  const user = escapeXml(config.username || "");
 
-  const lines = buildInfoLines(config);
-  const { clipPaths, textElements, cursorElement } = renderTerminalLines(lines, theme);
-  const avatarHudSvg = renderAvatarHud(config, avatarDataUri, theme);
+  const callouts = [...(config.callouts || [])];
+  if (Number.isFinite(options.commits)) {
+    callouts.unshift({ part: "ram", text: `ram: ${options.commits.toLocaleString("en-US")} commits in 52 weeks` });
+  }
 
-  const commandLabel = config.commandTitle || `${config.username}@overworld ~ % ./profile.sh --live`;
+  const tagline = wrapText(config.tagline, 46).slice(0, 3);
+  const chip = buildChip(t, config.partNumber || "SS-2029");
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1180" height="586" viewBox="0 0 1180 586">
-<defs>
-${clipPaths}
-  <style>
-    .key    { font-family: 'Courier New', Consolas, monospace; font-size: 13.5px; font-weight: bold; fill: ${isDark ? '#9bd469' : '#4e852f'}; }
-    .value  { font-family: 'Courier New', Consolas, monospace; font-size: 13.5px; font-weight: 500; }
-    .cc     { font-family: 'Courier New', Consolas, monospace; font-size: 13.5px; fill: ${isDark ? '#75816a' : '#a0a88d'}; }
-    .head   { font-family: 'Courier New', Consolas, monospace; font-size: 15px; font-weight: bold; }
-    .accent { font-family: 'Courier New', Consolas, monospace; font-size: 13.5px; font-weight: bold; }
-    text, tspan { white-space: pre; }
-    
-    .term-label { font-family: 'Courier New', Consolas, monospace; font-size: 12px; fill: ${isDark ? '#e2e6d7' : '#283020'}; font-weight: bold; }
-    .scan-label { font-family: 'Courier New', Consolas, monospace; font-size: 10px; fill: ${isDark ? '#a5d575' : '#4e852f'}; }
-    .panel-title-blue { font-family: 'Courier New', Consolas, monospace; font-size: 11px; fill: ${isDark ? '#d2a45d' : '#80552c'}; font-weight: bold; }
-    .panel-title { font-family: 'Courier New', Consolas, monospace; font-size: 11px; fill: ${isDark ? '#a5d575' : '#4e852f'}; font-weight: bold; }
-  </style>
-</defs>
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}" role="img" aria-label="${name}: ${escapeXml(config.tagline || "")}">
+<title>${name}</title>
+<style>
+${baseStyle(t)}
+@keyframes pulse{0%{opacity:1;stroke-dashoffset:1}100%{opacity:1;stroke-dashoffset:0}}
+</style>
+${sheetFrame(t, WIDTH, HEIGHT)}
 
-<rect width="1180" height="586" fill="${isDark ? '#171b16' : '#e7eadf'}"/>
-<rect x="0" y="0" width="1180" height="8" fill="${isDark ? '#6fa84b' : '#5b8d38'}"/>
-<rect x="0" y="8" width="1180" height="4" fill="${isDark ? '#446b32' : '#82aa55'}"/>
+<g id="nav" class="rise" style="animation-delay:.1s">
+  <rect x="40" y="31" width="16" height="16" rx="2" fill="none" stroke="${t.ink}"/>
+  <rect x="44.5" y="35.5" width="7" height="7" fill="${t.ink}"/>
+  <text x="66" y="44" class="mono" font-size="13">${escapeXml((config.site || user).replace(/\..*$/, ""))}</text>
+  <text x="${WIDTH - 40}" y="44" text-anchor="end" class="mono i2" font-size="12">${site}${site && user ? "   ·   " : ""}github.com/${user}</text>
+</g>
+<path d="M12 62H${WIDTH - 12}" stroke="${t.line2}"/>
 
-<g id="titlebar">
-  <rect x="12" y="18" width="1156" height="30" fill="${isDark ? '#242a21' : '#d0d5c3'}" stroke="${isDark ? '#646b5c' : '#9ca38d'}" stroke-width="2"/>
-  <rect x="22" y="27" width="12" height="12" fill="${isDark ? '#80b952' : '#5b8d38'}"/>
-  <text x="590" y="38" text-anchor="middle" class="term-label">${escapeXml(commandLabel)}</text>
-  <rect x="1090" y="27" width="10" height="10" fill="${isDark ? '#80b952' : '#5b8d38'}"/>
-  <text x="1108" y="37" class="scan-label">ONLINE</text>
+<g id="chip">
+${chip.svg}
+${chip.pulses}
 </g>
 
-<g transform="translate(0,44)">
-  ${avatarHudSvg}
-
-  <!-- Inventory style player information panel -->
-  <rect x="508" y="8" width="655" height="518" fill="${isDark ? '#20261e' : '#d9dec8'}" stroke="${isDark ? '#747b69' : '#9ca38d'}" stroke-width="4"/>
-  <rect x="520" y="16" width="631" height="30" fill="${isDark ? '#30372b' : '#c4cbb3'}"/>
-  <text x="532" y="36" class="panel-title">PLAYER INVENTORY</text>
-  <text x="30" y="14" class="panel-title-blue">WORLD // OVERWORLD</text>
-
-${textElements}
-${cursorElement}
+<g id="intro">
+  <g class="rise" style="animation-delay:.25s">
+    <text x="56" y="118" class="mono i2" font-size="14" letter-spacing=".02em">${part}</text>
+    <path d="M${62 + part.length * 8.4} 113h34" stroke="${t.line2}"/>
+    <text x="${104 + part.length * 8.4}" y="118" class="mono i2" font-size="14">rev ${rev}</text>
+  </g>
+  <text x="54" y="178" class="sans rise" font-size="52" font-weight="600" letter-spacing="-.02em" style="animation-delay:.4s">${name}</text>
+  ${tagline.map((l, i) => `<text x="56" y="${222 + i * 27}" class="sans i2 rise" font-size="19.5" style="animation-delay:${(0.55 + i * 0.07).toFixed(2)}s">${escapeXml(l)}</text>`).join("\n  ")}
 </g>
 
-<rect x="4" y="4" width="1172" height="578" fill="none" stroke="${isDark ? '#646b5c' : '#9ca38d'}" stroke-width="4"/>
+<g id="specs">
+${buildSpecTable(t, config.specs, { y: 222 + tagline.length * 27 + 12 })}
+</g>
+
+<g id="callouts">
+${buildCallouts(t, callouts)}
+</g>
+
+<text x="40" y="550" class="mono i3 rise" font-size="10.5" style="animation-delay:1.6s">fig. 1 — the build, exploded. hidden-line, not to scale.</text>
+${titleBlock(t, [
+    { k: "DRAWN", v: user, w: 132 },
+    { k: "PART", v: part, w: 86 },
+    { k: "SHEET", v: "01 / 02", w: 74 },
+    { k: "REV", v: rev, w: 64 }
+  ], WIDTH - 40, 526)}
 </svg>`;
 }

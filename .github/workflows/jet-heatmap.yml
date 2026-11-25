@@ -1,4 +1,4 @@
-name: Update Minecraft Profile & Contribution SVGs
+name: Update profile sheets
 
 on:
   schedule:
@@ -12,6 +12,7 @@ on:
       - "profile.config.json"
       - "generate.mjs"
       - "profile.mjs"
+      - "sheet.mjs"
 
 permissions:
   contents: write
@@ -31,7 +32,7 @@ jobs:
       - name: Verify profile generator
         run: npm test
 
-      - name: Generate live Minecraft profile and contribution heatmap
+      - name: Generate profile and contribution sheets
         env:
           GH_USERNAME: ${{ github.repository_owner }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,5 +42,5 @@ jobs:
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: update live profile cards and jet heatmap [skip ci]"
-          file_pattern: "dist/github-jet.svg github-jet.svg dark.svg light.svg"
+          commit_message: "chore: update live profile sheets [skip ci]"
+          file_pattern: "dist/github-jet.svg dist/github-jet-light.svg github-jet.svg github-jet-light.svg dark.svg light.svg"

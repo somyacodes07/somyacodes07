@@ -23,5 +23,6 @@ Thumbs.db
 # Build artifacts & cache
 dist/*
 !dist/github-jet.svg
+!dist/github-jet-light.svg
 *.tmp
 *.bak
