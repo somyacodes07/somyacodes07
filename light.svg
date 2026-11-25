@@ -164,7 +164,7 @@ text{white-space:pre}
   <path d="M1140 111H885.2L829.7 219.9" fill="none" stroke="rgba(43,41,39,0.32)" pathLength="1" class="pen" style="animation-delay:1.80s"/>
   <g class="rise" style="animation-delay:1.80s">
     <rect x="920.0" y="93" width="222.0" height="16" fill="#D9D5CF"/>
-    <text x="1140" y="104" text-anchor="end" class="mono i2" font-size="12"><tspan class="red">ram:</tspan> 1,111 commits in 52 weeks</text>
+    <text x="1140" y="104" text-anchor="end" class="mono i2" font-size="12"><tspan class="red">ram:</tspan> 1,113 commits in 52 weeks</text>
     <circle cx="829.7" cy="219.9" r="2.6" fill="#D9D5CF" stroke="#E5483A" stroke-width="1.2" style="animation:blink 1.6s ease-in-out 2.5s infinite"/>
   </g>
 </g>
